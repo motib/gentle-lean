@@ -1,0 +1,10 @@
+
+.lake/packages/*
+*.zip
+*.bat
+*.aux
+*.toc
+*.log
+*.gz
+*~
+tutorial/*.pdf

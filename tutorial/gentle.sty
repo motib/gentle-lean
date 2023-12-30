@@ -1,0 +1,38 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\usepackage{fontspec}
+\usepackage{url}
+\usepackage{mathpazo}
+
+\setromanfont{Palatino Linotype}
+\setmonofont{FreeMono}
+
+\usepackage{fancyvrb}
+\fvset{frame=lines,numbers=left,xleftmargin=2em,samepage=true}
+\DefineShortVerb{\!}
+
+\newcommand*{\indnt}{\hspace*{3em}}
+
+\newcommand*{\boxed}[2]{%
+  \begin{center}%
+    \framebox[.8\textwidth]{%
+      \begin{minipage}{.7\textwidth}%
+        {\centering\textsf{\bfseries\large #1}\par} #2%
+      \end{minipage}%
+    }%
+  \end{center}%
+}
+
+% Layout
+\textwidth=150mm
+\textheight=225mm
+\topmargin=0pt
+\headheight=11pt
+\oddsidemargin=1em
+\evensidemargin=0mm
+\headsep=0pt
+\parindent=0pt
+\renewcommand{\baselinestretch}{1.1}
+\setlength{\parskip}{0.3\baselineskip plus 1pt minus 1pt}
+

@@ -1,0 +1,170 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{There exists an infinite number of prime numbers}
+
+Assume to the contrary that there are finitely many prime numbers $p_1,p_2,\ldots,p_n$. Consider $q=(p_1p_2\cdots p_n)+1$. For any $1<m<q$, $m$ does not divide $q$ because the remainder is $1$. Therefore, $q$ is a prime since it is divisible only by $1$ and $q$.
+
+There are two ways to define primes in Lean:
+\begin{itemize}
+\item !Nat.prime_def_lt!: $p$ is prime if and only if $(2\leq p) \wedge \forall m < p (m|p \rightarrow m=1)$.
+
+\item !Nat.Prime.eq_one_or_self_of_dvd!: $p$ is prime only if $m|p \rightarrow (m=1 \vee m=p)$.\footnote{This definition is \emph{not} if and only if because $p=1$ satisfies the right-hand side but $1$ is not a prime.}
+
+\end{itemize}
+The proof above follows the definition !Nat.prime_def_lt!, but the proof using\\
+\indnt{}!Nat.Prime.eq_one_or_self_of_dvd!\\
+is easier, because we need only work the hypothesis $m|p$ and not with the quantifier $\forall m<p$.
+
+% Need to undefine ! to use in mathematical expression
+The proof starts with the \emph{definition} of $p$ as the smallest prime factor of \UndefineShortVerb{\!}$n!+1$.\DefineShortVerb{\!}  A major part of the proof is to show that such a $p$ does exist.
+
+\begin{Verbatim}
+theorem exists_infinite_primes (n : ℕ) :
+    ∃ p, n ≤ p ∧ Nat.Prime p := by
+      -- For all natural numbers n,
+      --   there exists a natural number p,
+      --   such that n ≤ p and p is a prime
+  let p := minFac (n ! + 1)
+    -- if n ! + 1 ≠ 1, p is its smallest prime factor
+\end{Verbatim}
+
+\boxed{Tactic \Verb+let+}{\Verb+let+ introduces a definition whose scope is local.}
+
+Now we prove the hypothesis that \UndefineShortVerb{\!}$n!+1 \neq 1$.\DefineShortVerb{\!}
+
+\begin{Verbatim}[firstnumber=last]
+  have f1 : n ! + 1 ≠ 1 := by
+    apply Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+      -- factorial_pos: n ! > 0
+      -- succ_lt_succ: m < n → succ m < succ n
+      --   where m = 0, n = n !
+      --   succ(essor of) n is the formal definition of n + 1
+      -- ne_of_gt: b < a → b ≠ a
+      --   where b = 1 and a = n ! + 1
+      -- <| means that the formula on its right is
+      --   the input to the one on its left
+\end{Verbatim}
+
+Let us look at 
+!apply Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _! in detail.
+\begin{itemize}
+\item !factorial_pos _! is the theorem that the value of any factorial is positive, here, \UndefineShortVerb{\!}$0<n!$\DefineShortVerb{\!}.
+
+\item !succ_lt_succ! uses the definition of $+1$ as the successor function. It takes 
+\UndefineShortVerb{\!}$0<n!$ from \Verb+factorial_pos _+ and proves that $0+1<n!+1$\DefineShortVerb{\!}.
+
+\item !Nat.ne_of_gt! is the simple theorem that if
+\UndefineShortVerb{\!}$1<n+1!$ then $1\neq n+1!$ \DefineShortVerb{\!}, which is the hypothesis !f1! that we want to prove.
+\end{itemize}
+
+\boxed{Tip right-to-left}{The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.}
+
+From the hypothesis !f1! it follows that \UndefineShortVerb{\!}$n!+1$\DefineShortVerb{\!} has a smallest prime factor and therefore $p$ exists.
+
+\begin{Verbatim}[firstnumber=last]
+  have pp : Nat.Prime p := by
+    apply minFac_prime f1
+      -- minFac_prime: if n ≠ 1 then
+      --   the smallest prime factor of n prime,
+      --   where n = n ! + 1
+      -- f1 proves pp
+\end{Verbatim}
+
+To prove $n\leq p$, we will prove the equivalent formula $\neg (n \geq p)$ which itself if equivalent to $(n\geq p) \rightarrow \mathit{False}$. The method is to introduce $n\geq p$ as a new hypothesis and derive a contradiction.
+
+\begin{Verbatim}[firstnumber=last]
+  have np : n ≤ p := by
+    apply le_of_not_ge
+      -- le_of_not_ge: ¬a ≥ b → a ≤ b
+      --   where a = n, b = p
+      -- New goal is ¬n > p
+    intro h
+      -- By definition of negation, n ≥ p implies False
+      -- Assume n ≥ p and make False the new goal
+      --   to prove np by contradiction
+\end{Verbatim}
+\boxed{Tip negation}{A negation \Verb+¬p+ is \emph{defined} as \Verb+p → False+. The tactic \Verb+intro+ makes \Verb+p+ into a hypothesis and \Verb+False+ into the goal. When there are no more goals, \Verb+¬p+ has been proved (by contradiction).}
+
+On page~\pageref{p.intro} we noted that the tactic !intro! is applicable to goals or hypotheses of the form \Verb+P → Q+, as is done here with \Verb+p → False+.
+
+Two final hypotheses are needed: \UndefineShortVerb{\!}$p | n!$\DefineShortVerb{\!} and $p | 1$.
+
+In the proof of the first hypothesis, the theorem !dvd_factorial! takes two parameters: the fact that the minimum prime factor of any number (!_!) is positive and the hypothesis !h! that !n ≥ p!.
+\begin{Verbatim}[firstnumber=last]
+    have h₁ : p ∣ n ! := by
+      apply dvd_factorial (minFac_pos _) h
+        -- minFac_pos: 0 < minFac n,
+        --   where _ means that this holds for any n
+        -- dvd_factorial: (0 < m ∨ m ≤ n) → m ∣ n !
+        --   where m = p
+        -- p is natural so 0 < m and
+        -- p ≤ n by assumption (intro) h
+        -- h₁ is proved
+\end{Verbatim}
+
+To prove the second hypothesis we use the theorem !Nat.dvd_add_iff_right! whose main operator is if-and-only-if $a \leftrightarrow b$. This theorem can be used in two ways:
+\begin{itemize}
+\item Modus ponens (!mp!): $a \rightarrow b$, assume $a$ and prove $b$.
+\item Modus ponens reversed (!mpr!): $a \leftarrow b$, assume $b$ and prove $a$.
+\end{itemize}
+Here the reversed modus ponens is used.
+\begin{Verbatim}[firstnumber=last]
+    have h₂ : p ∣ 1 := by
+      apply (Nat.dvd_add_iff_right h₁).mpr (minFac_dvd _)
+        -- minFac_dvd: minFac n ∣ n,
+        --   where _ means that this holds for any n
+        -- dvd_add_iff_right: k ∣ m → (k ∣ n ↔ (k ∣ m) + n)
+        --   where k = p, m = n !, n = 1
+        --   p ∣ n ! by h₁, so p | 1 iff p ∣ n ! + 1
+        -- mpr (MP reverse): p ∣ n ! + 1 → p | 1
+        --   p ∣ n ! + 1 by definition
+        --   since pp shows that p is prime
+        -- p ∣ is proved
+\end{Verbatim}
+
+Applications of the hypotheses !pp! and !h₂! complete the proof of !np!.
+\begin{Verbatim}[firstnumber=last]
+    apply Nat.Prime.not_dvd_one pp
+      -- if p is a prime (true by pp) then ¬p ∣ 1
+      --   which is p | 1 → False
+    exact h₂
+      -- Use MP with h₂, proving False and
+      --   thus np by contradiction,
+      --   since by definition a prime is ≥ 2
+    -- The proof of np : np: n ≤ p is (finally) complete
+\end{Verbatim}
+
+The current goal is now $\exists p( n \leq p \wedge \mathit{prime}(p))$. The existentially quantified variable $p$ must be replace with a specific value which is also $p$ using the tactic !use!.  This leaves the conjunction $n \leq p \wedge \mathit{prime}(p)$, which is split into two subgoals that are proved using the hypotheses !np! and !pp!.
+
+\begin{Verbatim}[firstnumber=last]
+  use p
+    -- Introduce free variable p for the bound variable p
+    --   to get n ≤ p ∧ Nat.Prime p
+    -- Since both conjuncts are hypotheses,
+    --   the proof is complete
+  done
+\end{Verbatim}
+
+\boxed{Tactic \Verb+use+}{Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.}
+
+Even without the comments the proof is not short. When proving complex theorems it is convenient to assume that certain lemmas are true, and then when the main proof is complete to return to prove the lemmas. In Lean the tactic !sorry! is accepted as a proof of anything. For example, the eight-line proof of the hypothesis !np! can be proved by !sorry!. Lean will issue a stern warning to tell you not to rest on your laurels.
+
+\vspace{-2ex}
+
+\begin{Verbatim}[numbers=none]
+theorem exists_infinite_primes (n : ℕ) : 
+    ∃ p, n ≤ p ∧ Nat.Prime p := by
+  let p := minFac (n !  + 1)
+  have f1 : n ! + 1 ≠ 1 := by ...
+  have pp : Nat.Prime p := by ...
+  have np : n ≤ p       := by sorry
+  apply Exists.intro p
+  apply And.intro
+  · apply np
+  · apply pp
+  done
+\end{Verbatim}
+
+\boxed{Tactic \Verb+sorry+}{Proves any theorem.}
+

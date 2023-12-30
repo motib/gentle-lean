@@ -1,0 +1,86 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{Commutativity of the greatest common denominator}
+
+
+A theorem is declared like a function in a programming language with the name of the theorem, its parameters and the statement of the theorem. The keyword !by! introduces a \emph{tactic proof}, which we will be using exclusively in this tutorial.
+\begin{Verbatim}
+/-
+  Commutativity of gcd
+-/
+theorem gcd_comm (m n : ℕ) :
+    Nat.gcd m n = Nat.gcd n m := by
+\end{Verbatim}
+
+The parameters !m n! which are declared as natural numbers have a logical meaning as universally quantified variables.
+\[
+\forall m, n \in N : (\gcd (m,n) = \gcd (n,m))\,.
+\]
+The proof of the theorem uses the fact that the division operator is antisymmetric: if $m | n$ and $m | n$ then $m=n$. Applying this theorem results in two new goals.
+\begin{Verbatim}[firstnumber=last]
+  apply Nat.dvd_antisymm
+    -- dvd_antisymm: (m ∣ n ∧ n ∣ m) → m = n,
+    --   where m = gcd m n, n = gcd n m
+    -- Two new goals: gcd m n ∣ gcd n m, gcd n m ∣ gcd m n
+\end{Verbatim}
+
+When you place the cursor before line~6, Lean Inforview will display the \emph{tactic state}:
+\begin{Verbatim}[numbers=none]
+1 goal
+m n : ℕ
+⊢ Nat.gcd m n = Nat.gcd n m
+\end{Verbatim}
+This gives the \emph{context} that !m n! are natural numbers and the current \emph{goal} following the turnstile symbol !⊢!. After the theorem !Nat.dvd_antisymm! is applied, the tactic state changes to
+\begin{Verbatim}[numbers=none]
+2 goals
+case a
+m n : ℕ
+⊢ Nat.gcd m n ∣ Nat.gcd n m
+case a
+m n : ℕ
+⊢ Nat.gcd n m ∣ Nat.gcd m n
+\end{Verbatim}
+By the anti-symmetry of division, you can prove an equality by proving that the two sides divide each other, thus creating two goals.
+
+\boxed{Tactic \Verb+apply+}{If you have a theorem \Verb+P→Q+ and the goal matches\footnote{Technically, if the goal \emph{unifies} with \Verb+Q+, but we don't explain the concept here.} \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\smallskip\\
+If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.}
+
+$\gcd (m,n)$ will divide $\gcd (n,m)$ only if it divides both $n$ and $m$, so we again have two new subgoals. Then, by definition, $\gcd (m,n)$ is a common divisor so it divides both the left parameter $m$ and the right parameter $n$. 
+
+\begin{Verbatim}[firstnumber=last]
+  -- First goal
+  apply Nat.dvd_gcd
+      -- dvd_gcd: (k ∣ m ∧ k ∣ n) → k ∣ gcd m n,
+      --   where k = gcd m n, m = n, n = m
+      -- New goals are gcd m n ∣ n and gcd m n ∣ m
+  apply Nat.gcd_dvd_right
+      -- gcd_dvd_right: gcd m n ∣ n,
+      --   where m = m, n = n
+  apply Nat.gcd_dvd_left
+      -- gcd_dvd_left: gcd m n ∣ m
+      --   where m = m, n = n
+\end{Verbatim}
+
+\pagebreak[3]
+
+Repeat the same proof for the second subgoal $\gcd (n,m) | \gcd (m,n)$.
+
+\begin{Verbatim}[firstnumber=last]
+  -- Second goal
+  apply Nat.dvd_gcd
+      -- dvd_gcd: k ∣ m ∧ k ∣ n → k ∣ gcd m n,
+      --   where k = gcd n m, m = m, n = n
+      -- New goals are gcd n m ∣ m and gcd n m ∣ n
+  apply Nat.gcd_dvd_right
+      -- gcd_dvd_right: gcd m n ∣ n,
+      --   where m = n, n = m
+  apply Nat.gcd_dvd_left
+      -- gcd_dvd_left: gcd m n ∣ m
+      --   where m = n, n = m
+  done
+\end{Verbatim}
+
+\boxed{Tip \Verb+done+}{All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.}
+
+\boxed{Tip Division}{The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\symbol{92}|+.}

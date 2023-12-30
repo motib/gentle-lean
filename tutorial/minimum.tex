@@ -1,0 +1,66 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{Commutativity of minimum}
+
+To prove that the minimum operator is commutative, a hypothesis named !h! is introduced. Of course we have to prove the hypothesis before we can use it.
+
+\begin{Verbatim}
+/-
+  Commutativity of minimun
+-/
+theorem min_comm (a b : ℕ) :
+    min a b = min b a := by
+
+  have h : ∀ x y : ℕ, min x y ≤ min y x := by
+    -- Hypothesis: For all natural numbers x y,
+    --   min x y ≤ min y x
+\end{Verbatim}
+\boxed{Tactic \Verb+have+}{Introduces a new named hypothesis for use in the proof.}
+
+\boxed{Tip indentation}{All statements used to prove a hypothesis must be indented a fixed number of spaces.}
+
+The hypothesis is $\forall m, n \in N : (\min (m,n) = \min (n,m))$. For the bound variables $m, n$, free variables must be substituted. The tactic !intro x y! introduces new free variables !x y! for !m n!.
+\begin{Verbatim}[firstnumber=last]
+    intro x y
+      -- Introduce arbitrary x y in place of ∀
+\end{Verbatim}
+\boxed{Tactic \Verb+intro+}{Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we substitute a variable that is this arbitrary value.
+\smallskip\\
+If the goal is is \Verb+⊢P→Q+, \Verb+intro+ introduces \Verb+P+ as a hypothesis.\label{p.intro} If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.}
+
+The first step of the proof of the hypothesis uses the theorem that $c\le a \wedge c \le b \rightarrow c \le \min(a,b)$. The Lean theorem !le_min! is applied to obtain two subgoals whose proofs complete the proof of the hypothsis !h!.
+
+\begin{Verbatim}[firstnumber=last]
+    apply le_min
+      -- le_min: for all natural numbers c,
+      --   (c ≤ a ∧ c ≤ b) → c ≤ min a b
+      --   where a = y, b = x, c = min x y
+      --   New goals are min x y ≤ y and min x y ≤ x
+\end{Verbatim}
+\begin{Verbatim}[firstnumber=last]
+    apply min_le_right
+      -- min_le_right: min a b ≤ b
+      --   where a = x, b = y
+      -- Solves goal min x y ≤ y
+    apply min_le_left
+      -- min_le_left: min a b ≤ a
+      --   where a = y, b = x
+    -- This completes the proof of h
+\end{Verbatim}
+Now that !h! has been proved, the indentation is removed to continue the proof the main theorem.
+
+!le_antisymm! is applied to the goal creating two subgoals which are proved by applying the hypothesis !h!.
+
+\begin{Verbatim}[firstnumber=last]
+  apply le_antisymm
+    -- le_antisymm: (a ≤ b ∧ b ≤ a) → a = b
+    --   where a = min a b, b = min b a
+    --   New goals are min a b ≤ min b a and min b a ≤ min a b
+  apply h
+    -- Apply h with x = a and y = b
+  apply h
+    -- Apply h with x = b and y = a
+  done
+\end{Verbatim}
+
