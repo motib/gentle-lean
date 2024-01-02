@@ -19,7 +19,7 @@ theorem lt_iff_le_eq {a b : Int} :
     -- First subgoal is (a ≤ b ∧ ¬b ≤ a) → (a ≤ b ∧ a ≠ b)
  \end{Verbatim}
 
-\boxed{Tactic \Verb+constructor+}{Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.}
+\boxed{Tactic \Verb+constructor+}{constructor}{Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.}
 
 The current goal is an implication whose premise and conclusion are both conjunctions. We can use !intro! to introduce the premise as a hypothesis and then !rcases! (page~\pageref{p.rcases}) to split the conjunctive hypothesis into two subgoals to be proved.
 \indnt{}!intro h!\\
@@ -60,7 +60,7 @@ The proof of the implication of the mpr direction is similar.
   done
 \end{Verbatim}
 
-\boxed{Tactic \Verb+rintro+}{Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.}
+\boxed{Tactic \Verb+rintro+}{rintro}{Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.}
 
 \subsection{Disjunction}
 
@@ -96,9 +96,9 @@ In the mp formula, the premise is introduced as a hypothesis and the  conclusion
         -- Lean can prove that this implies the goal x < y
 \end{Verbatim}
 
-\boxed{Tactic \Verb+left+, \Verb+right+}{If the goal is a disjunction, tell Lean which disjunction you want to prove.}
+\boxed{Tactic \Verb+left+, \Verb+right+}{left-right}{If the goal is a disjunction, tell Lean which disjunction you want to prove.}
 
-\boxed{Tactic \Verb+linarith+}{The tactic solves linear equalities and inequalities. Unlike \Verb+ring+ it can use hypotheses and unlike \Verb+norm\_num+ it can solve equations with variables.}
+\boxed{Tactic \Verb+linarith+}{linarith}{The tactic solves linear equalities and inequalities. Unlike \Verb+ring+ it can use hypotheses and unlike \Verb+norm\_num+ it can solve equations with variables.}
 
 The proof for $y< 0$ is similar.
 \begin{Verbatim}[firstnumber=last]
@@ -130,7 +130,7 @@ theorem T1a {A : Prop} : (¬A → A) → A := by
   done
 \end{Verbatim}
 
-\boxed{Tactic \Verb+by\_contra+}{This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.}
+\boxed{Tactic \Verb+by\_contra+}{by-contra}{This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.}
 
 Here is another proof of the same theorem, this time using contraposition instead of contradiction. The result of using the tactic !contrapose! will be unfamiliar. Given the \emph{hypothesis} $\neg A \rightarrow A$, it does not change the hypothesis into $\neg A \rightarrow \neg\neg A$. Instead, the hypothesis becomes the goal $\neg(\neg A \rightarrow A)$ and the goal $A$ becomes the hypothesis $\neg A$.
 
@@ -166,7 +166,7 @@ theorem T1b {A : Prop} : (¬A → A) → A := by
   done
 \end{Verbatim}
 
-\boxed{Tactic \Verb+contrapose+}{Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
+\boxed{Tactic \Verb+contrapose+}{contrapose}{Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
 An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ on the resulting contrapositive.}
 
 The interesting step in the following proof is \\
@@ -193,7 +193,7 @@ theorem T2 {A B : Prop} : ((A → B) → A) → A := by
   done
 \end{Verbatim}
 
-\boxed{Tip Don't care}{When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.}
+\boxed{Tip Don't care}{dont-care}{When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.}
 
 The next theorem we want to prove $(A\rightarrow B) \vee (B \rightarrow C)$ has a disjunction operator as its main operator. We prefer to carry out the proof using only the implication operator, so we first try to prove the hypthosis $\neg(A\rightarrow B) \rightarrow (B \rightarrow C)$.
 
@@ -225,7 +225,7 @@ theorem T1a {A : Prop} : (¬A → A) → A := by tauto
 theorem T2  {A B : Prop} : ((A → B) → A) → A  := by tauto
 theorem T3  {A B C : Prop} : (A → B) ∨ (B → C) := by tauto
 \end{Verbatim}
-\boxed{Tactic \Verb+tauto+}{If a tautology can be formed from the hypotheses and the goal, the proof can be immediately completed using this tactic.}
+\boxed{Tactic \Verb+tauto+}{tauto}{If a tautology can be formed from the hypotheses and the goal, the proof can be immediately completed using this tactic.}
 The following theorem that !tauto! works when the tautology is formed from both a hypothesis and a goal.\\
 !theorem T0a {A : Prop} (h : ¬A → A) : A := by tauto!\\
 This theorem shows that !tauto! works on substitution instances of a tautology.\\

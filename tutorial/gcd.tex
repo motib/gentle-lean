@@ -43,7 +43,7 @@ m n : ℕ
 \end{Verbatim}
 By the anti-symmetry of division, you can prove an equality by proving that the two sides divide each other, thus creating two goals.
 
-\boxed{Tactic \Verb+apply+}{If you have a theorem \Verb+P→Q+ and the goal matches\footnote{Technically, if the goal \emph{unifies} with \Verb+Q+, but we don't explain the concept here.} \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\smallskip\\
+\boxed{Tactic \Verb+apply+}{apply}{If you have a theorem \Verb+P→Q+ and the goal matches\footnote{Technically, if the goal \emph{unifies} with \Verb+Q+, but we don't explain the concept here.} \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\smallskip\\
 If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.}
 
 $\gcd (m,n)$ will divide $\gcd (n,m)$ only if it divides both $n$ and $m$, so we again have two new subgoals. Then, by definition, $\gcd (m,n)$ is a common divisor so it divides both the left parameter $m$ and the right parameter $n$. 
@@ -81,6 +81,6 @@ Repeat the same proof for the second subgoal $\gcd (n,m) | \gcd (m,n)$.
   done
 \end{Verbatim}
 
-\boxed{Tip \Verb+done+}{All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.}
+\boxed{Tip \Verb+done+}{done}{All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.}
 
-\boxed{Tip Division}{The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\symbol{92}|+.}
+\boxed{Tip Division}{division}{The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\symbol{92}|+.}

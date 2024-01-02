@@ -4,6 +4,7 @@
 \usepackage{fontspec}
 \usepackage{url}
 \usepackage{mathpazo}
+\usepackage{xltxtra}
 
 \setromanfont{Palatino Linotype}
 \setmonofont{FreeMono}
@@ -14,11 +15,11 @@
 
 \newcommand*{\indnt}{\hspace*{3em}}
 
-\newcommand*{\boxed}[2]{%
-  \begin{center}%
+\newcommand*{\boxed}[3]{%
+  \begin{center}\label{p.#2}%
     \framebox[.8\textwidth]{%
       \begin{minipage}{.7\textwidth}%
-        {\centering\textsf{\bfseries\large #1}\par} #2%
+        {\centering\textsf{\bfseries\large #1}\par} #3%
       \end{minipage}%
     }%
   \end{center}%

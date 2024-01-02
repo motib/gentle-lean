@@ -33,29 +33,31 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 
 \section{Tips}
 
-\begin{tabular}{p{.15\textwidth}|@{\hspace{1em}}p{.8\textwidth}}
+\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
-Associativity&The default associativity in Lean is \emph{left}: \verb!a + b + c! means \verb!(a + b) + c!. Even if the operation is associative, you still have to prove associativity for a given expression.\\\hline
+Topic & Page & Tip\\
+\hline
+Associativity&\pageref{p.associativity}&The default associativity in Lean is \emph{left}: \verb!a + b + c! means \verb!(a + b) + c!. Even if the operation is associative, you still have to prove associativity for a given expression.\\\hline
 
-Division&The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\|+.\\\hline
+Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\|+.\\\hline
 
-\Verb+done+&All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.\\\hline
+\Verb+done+&\pageref{p.done}&All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.\\\hline
 
-Don't care&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
+Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
 
-Indentation&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
+Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
 
-Infoview&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.\\\hline
+Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.\\\hline
 
-Implicit&Parameters declared with braces, such as \Verb+{a b c : Int}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.\\\hline
+Implicit&\pageref{p.implicit}&Parameters declared with braces, such as \Verb+{a b c : Int}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.\\\hline
 
-Negation&A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.\\\hline
+Negation&\pageref{p.negation}&A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.\\\hline
 
-Right-to-left&The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.\\\hline
+Right-to-left&\pageref{p.right-to-left}&The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.\\\hline
 
-Tactics&If you hover over a tactic its specification will be displayed.\\\hline
+Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be displayed.\\\hline
 
-Theorems&You can display the statement of a theorem by hovering over its name.\\\hline
+Theorem&\pageref{p.theorem}&You can display the statement of a theorem by hovering over its name.\\\hline
 \end{tabular}
 
 \newpage
@@ -63,48 +65,52 @@ Theorems&You can display the statement of a theorem by hovering over its name.\\
 
 \section{Tactics}
 
-\begin{tabular}{p{.15\textwidth}|@{\hspace{1em}}p{.8\textwidth}}
+\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
-\Verb+apply+&If you have a theorem \Verb+P→Q+ and the goal matches \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\\
-&If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.\\\hline
+Tactic & Page & Definition\\
+\hline
+\Verb+apply+&\pageref{p.apply}&If you have a theorem \Verb+P→Q+ and the goal matches \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\\
+&&If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.\\\hline
 
-\Verb+by_contra+&This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.\\\hline
+\Verb+by_contra+&\pageref{p.by-contra}&This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.\\\hline
 
-\Verb+contrapose+&Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
+\Verb+contrapose+&\pageref{p.contrapose}&Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
 An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ on the resulting contrapositive.\\\hline
 
-\Verb+constructor+&Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.\\\hline
+\Verb+constructor+&\pageref{p.constructor}&Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.\\\hline
 
-\Verb+exact+&The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.\\\hline
+\Verb+exact+&\pageref{p.exact}&The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.\\\hline
 
-\Verb+have+&Introduces a new named hypothesis for use in the proof.\\\hline
+\Verb+have+&\pageref{p.have}&Introduces a new named hypothesis for use in the proof.\\\hline
 
-\Verb+intro+&Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we simply substitute a variable that is this arbitrary value.\\
-&If the goal is \Verb+⊢P→Q+ then \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.\\
-&For an existential goal \Verb+∃ a A(a)+, \Verb+intro c+ introduces \Verb+A(c)+ as the new goal.\\\hline
+\Verb+intro+&\pageref{p.intro}&Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we simply substitute a variable that is this arbitrary value.\\
+&&If the goal is \Verb+⊢P→Q+ then \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.\\
+&&For an existential goal \Verb+∃ a A(a)+, \Verb+intro c+ introduces \Verb+A(c)+ as the new goal.\\\hline
 
-\Verb+left, right+ & If the goal is a disjunction, tell Lean which disjunction you want to prove.\\\hline
+\Verb+left, right+ &\pageref{p.left-right}& If the goal is a disjunction, tell Lean which disjunction you want to prove.\\\hline
 
-\Verb+linarith+&The tactic solves linear equalities and inequalities. Unlike \Verb+ring+ it can use hypotheses and unlike \Verb+norm_num+ it can solve equations with variables.\\\hline
+\Verb+linarith+&\pageref{p.linarith}&The tactic solves linear equalities and inequalities. Unlike \Verb+ring+ it can use hypotheses and unlike \Verb+norm_num+ it can solve equations with variables.\\\hline
 
-\Verb+norm_num+&Proves numerical equalities and inequalities that do not use variables.\\\hline
+\Verb+norm_num+&\pageref{p.norm-num}&Proves numerical equalities and inequalities that do not use variables.\\\hline
 
-\Verb+rcases+&Given a hypothesis or goal that is a disjunction \Verb+A∨B+ the tactic \Verb+rcases+ splits it into two sub-hypotheses or subgoals \Verb+A+ and \Verb+B+.\\
-&For a disjunctive hypothesis, prove the goal under both sub-hypotheses. For a disjunctive goal, prove one of the subgoals.\\\hline
+\Verb+rcases+&\pageref{p.rcases}&Given a hypothesis or goal that is a disjunction \Verb+A∨B+ the tactic \Verb+rcases+ splits it into two sub-hypotheses or subgoals \Verb+A+ and \Verb+B+.\\
+&&For a disjunctive hypothesis, prove the goal under both sub-hypotheses. For a disjunctive goal, prove one of the subgoals.\\\hline
 
-\Verb+rcases+&\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.\\\hline
+\Verb+rcases+&\pageref{p.rcases-with}&\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.\\\hline
 
-\Verb+ring+&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
+\Verb+ring+&&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
 
-\Verb+rintro+&Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.\\\hline
+\Verb+rintro+&\pageref{p.rintro}&Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.\\\hline
+\end{tabular}
 
-\Verb+rw+&\Verb+rw [eqn]+, where \Verb+eqn+ is an equation or an equivalence, rewrites the goal by replacing occurrences of the the left-hand side of \Verb+eqn+ with the right-hand side.\\
-&\Verb+rw [← eqn]+ rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side.\\
-&\Verb+rw [eqn] h+ and \Verb+rw [← eqn] h+ rewrite expressions in the hypothesis \Verb+h+.\\\hline
+\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
+\hline
+\Verb+rw+&\pageref{p.rw}&\Verb+rw [eqn]+, where \Verb+eqn+ is an equation or an equivalence, rewrites the goal by replacing occurrences of the the left-hand side of \Verb+eqn+ with the right-hand side.\\
+&&\Verb+rw [← eqn]+ rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side.\\
+&&\Verb+rw [eqn] h+ and \Verb+rw [← eqn] h+ rewrite expressions in the hypothesis \Verb+h+.\\\hline
 
-\Verb+sorry+&Proves any theorem.\\\hline
+\Verb+sorry+&\pageref{p.sorry}&Proves any theorem.\\\hline
 
-\Verb+use+&Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.\\\hline
-
+\Verb+use+&\pageref{p.use}&Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.\\\hline
 
 \end{tabular}

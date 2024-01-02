@@ -1,4 +1,4 @@
-
+test/*
 .lake/packages/*
 *.zip
 *.bat

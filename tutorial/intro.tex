@@ -5,63 +5,53 @@
 
 Lean 4 is a \emph{proof assistant}. You enter your proof into Lean in a formal language and the system checks the correctness of the proof. It displays the current set of hypotheses and goals, and it is capable of performing many simple proofs automatically. This tutorial is, as its name states, a gentle introduction to Lean intended for students and others who have no previous experience with a proof assistant.
 
-Complete Lean proofs of theorems of arithmetic and logic are given. The source code of the proofs (which can be found in the repository) is heavily commented and additional explanations are given. Proof tactics are introduced one at a time as needed as are tips on syntactical issues. No attempt is made to present Lean constructs in their full generality.
+Complete Lean proofs of theorems of arithmetic and logic are given. The source code is heavily commented and additional explanations are given. Proof tactics are introduced one at a time as needed as are tips on syntactical issues. Tables of keyboard shortcuts, tactics and tips are given in the appendices.
 
-Tables of keyboard shortcuts, tactics and tips are given in the appendices.
+This tutorial limits itself to proving properties of integers and natural numbers, for example, theorems on greatest common denominators and prime numbers. Beyond that you need a basic knowledge of propositional and first-order logic as found in introductory textbooks.\footnote{Only tactics are used in the proofs and they are applied one at a time.}
 
-This tutorial limits itself to proving properties of integers and natural numbers, for example, theorems on greatest common denominators and prime numbers. Beyond that you need a basic knowledge of propositional and first-order logic as found in introductory textbooks.
+The Lean source code of these proofs and the \XeLaTeX{} source of this document can be found at
+\indnt{}\url{https://github.com/motib/gentle-lean}.
 
 \subsection*{Installation}
 
-Installing and running Lean is a bit more complicated that what you may be used to with programming languages. To install, follow the instructions for your operating system at\\
+To install Lean, follow the instructions for your operating system at\\
 \indnt\url{https://leanprover-community.github.io/get_started.html}.
 
-The Lean community uses \emph{Visual Studio Code (VSC)} \url{https://code.visualstudio.com/}. It is a very versatile environment with lots of features, so make sure to study VSC tutorials before starting to work with Lean.
+The Lean community uses \emph{Visual Studio Code (VSC)} \url{https://code.visualstudio.com/}. It is a very versatile environment with lots of features, so be sure to study VSC tutorials before starting to work with Lean.
 
 You \emph{must} work within a project framework as described in\\ \indnt\url{https://leanprover-community.github.io/install/project.html}.\\ When you start Lean to work on an existing project, you must open the \emph{Folder} containing the project. Once you have created a project, you can create new source files which must have the extension !lean!.
 
 \subsection*{Tips for working with Lean}
 
-\boxed{Tip Infoview}{Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. To understand the effect of applying a tactic, I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.}
+\boxed{Tip Infoview}{infoview}{Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. To understand the effect of applying a tactic, I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.}
 
-\boxed{Tip tactic}{If you hover over a tactic its specification will be displayed.}
+\boxed{Tip tactic}{tactic}{If you hover over a tactic its specification will be displayed.}
 
-For example, the (partial) specification of !have! is
+For example, the specification of the tactic !exact! is\\
+\indnt{}!exact e! closes the main goal if its target type matches that of !e!.
 
-\indnt{}!have h : t := e adds the hypothesis h : t to the current goal!\\
-\indnt{}\indnt{}!if e a term of type t.!
+\boxed{Tip theorem}{theorem}{You can display the statement of a theorem by hovering over its name.}
 
-\boxed{Tip theorems}{You can display the statement of a theorem by hovering over its name.}
-
-For example, the declaration of the theorem !dvd_mul_right! is
-
-\indnt{}!dvd_mul_right.{u_1} {α : Type u_1} [inst✝ : Semigroup α]!\\
-\indnt{}\indnt{}!(a b : α) : a ∣ a * b!
-
-Theorems in Lean are defined to be as generally applicable as possible, so you will not be able to fully understand this declaration initially. In this tutorial only natural numbers and integers are used so you can view the theorem as if it were
-
+Theorems are defined to be widely applicable, so initially you will not be able to understand the full statement of a theorem. In this tutorial only natural numbers and integers are used, so you can interpret the theorems narrowly, for example,\\
 \indnt{}!dvd_mul_right (a b : Nat) : a ∣ a * b!
-
 
 \subsection*{Preamble of a Lean program}
 
-The first lines in a Lean file will look like this:
-\begin{Verbatim}
-import Mathlib.Tactic
-import Mathlib.Data.Nat.Prime
+The Lean community has developed an extremely large mathematical library called !Mathlib!. You will work with the definitions and theorems defined there, which must be imported as the first lines in you Lean source file.
 
-namespace gentle
+\indnt{}!import Mathlib.Tactic!\\
+imports the proof tactics.
 
-open Nat
-\end{Verbatim}
+You will need least one other library that contains the definitions and theorems of the data type that you want to work on, for example,\\
+\indnt{}!import Mathlib.Data.Nat.Prime!
 
-A Lean file starts with a list of library files that must be imported, here, !Mathlib.Tactic! which defines proof tactics and !Mathlib.Data.Nat.Prime! which has the definitions and theorems for natural numbers and primes.
+The examples here are enclosed in\\
+\indnt{}!namespace gentle!\\
+to ensure that their names do not clash with the names of theorems in !MathLib!. In addition,\\
+\indnt{}!open Nat!\\
+will often be used to open the namespace of !Nat! so that we can write !factorial! instead of !Nat.factorial!.
 
-The declaration !namespace gentle! means that the names of theorems in this file are prefixed by !gentle! so that they can be used in places where theorems with the same name exist. !namespace! is not needed but is recommended.
-
-!open Nat! exposes the !namespace! of !Nat! so that we can write just !factorial! rather than !Nat.factorial!. You have to be careful not to open multiple namespaces with conflicting names.
-
-When including Lean files in a document such as this tutorial, it is customary to omit the preamble since it doesn't contribute to learning new concepts. Of course they appear in the associated Lean source files.
+Preamble do not appear in the examples here but can be found in the Lean source files.
 
 \subsection*{Syntax}
 
@@ -70,7 +60,6 @@ Lean uses two types of comments:
 \item Line comments start with !--! and continue to end of the line.
 \item Range comments start with !/-! and continue to !-/!.
 \end{itemize}
-You can type the comment symbols or you can enter them through commands in VSC: !Ctrl-/! for line comments and !Shift-Alt-A! for range comments.
 
 Within Mathlib the convention is to use spaces around each operator:\\
 \indnt{}!a ≤ b ∧ b ≤ a → a = b!\\
@@ -78,26 +67,38 @@ and I will do so in this tutorial. You may ignore this convention in your proofs
 
 There is also a convention for naming theorems: the name is written in lower case with underscores between the parts of the name. The name specifies the meaning of the theorem in a few words or abbreviations, for example, !min_le_right! is !min a b ≤ b! and !min_le_left! is !min a b ≤ a!.
 
+\newpage
 
 \subsection*{References}
+\textbf{Mathematical logic}
 \begin{itemize}
-\item The games on the Lean Game Server (\url{https://adam.math.hhu.de/#/}), in particular, the Natural Number Game, are a fun way to start learning Lean.
-\item The website of the Lean Community contains links to important resources and to the Zulip chat where you can ask questions.\\
-\indnt{}\url{https://leanprover-community.github.io/}
+\item M. Ben-Ari. \textit{Mathematical Logic for Computer Science (Third Edition}, Springer, 2012.\\
+An introduction to mathematical logic including both syntactical and semantic proof methods, as well as sections on temporal logic and program verification.
+\item M. Huth and M. Ryan. \textit{Logic in Computer Science: Modelling and Reasoning about Systems (Second Edition)}, Cambridge University Press, 2004.\\
+An introduction to mathematical logic with emphasis on natural deduction, temporal logic and model checking.
+\end{itemize}
+\textbf{Lean resources}
+\begin{itemize}
 \item J. Avigad and P. Massot. \textit{Mathematics in Lean}.\\
 \indnt\url{https://leanprover-community.github.io/mathematics_in_lean/}\\
 This is a comprehensive presentation of the use of Lean to prove mathematical theorems. The proofs in this document are based on examples given there.
-\item D. J. Velleman. \textit{How to Prove It with Lean}.\\
-\indnt{}\url{https://djvelleman.github.io/HTPIwL/}\\
-This book focuses on proof techniques in mathematics; however, to simplify learning it uses tactics developed by the author.
 \item J. Avigad, L. de Moura, S. Kong and S. Ullrich. 
 \textit{Theorem Proving in Lean 4}. \\
 \indnt{}\url{https://lean-lang.org/theorem_proving_in_lean4/}\\
 A formal presentation of Lean.
-\item M. Ben-Ari. \textit{Mathematical Logic for Computer Science (Third Edition}, Springer, 2012.\\
-An introduction to mathematical logic including both syntactical and semantic proofs methods, as well as sections on temporal logic and program verification.
-\item M. Huth and M. Ryan. \textit{Logic in Computer Science: Modelling and Reasoning about Systems (Second Edition)}, Cambridge University Press, 2004.\\
-An introduction to mathematical logic with emphasis on natural deduction, temporal logic and model checking.
+\item The website of the Lean Community contains links to important resources and to the Zulip chat where you can ask questions.\\
+\indnt{}\url{https://leanprover-community.github.io/}
+\end{itemize}
+\textbf{Learning materials on Lean}
+\begin{itemize}
+\item The games on the Lean Game Server are a fun way to start learning Lean.\\
+\indnt{}\url{https://adam.math.hhu.de/}
+\item D. J. Velleman. \textit{How to Prove It with Lean}.\\
+\indnt{}\url{https://djvelleman.github.io/HTPIwL/}\\
+This work focuses on proof techniques in mathematics; to simplify learning it uses tactics developed by the author.
+\item H. Macbeth. \textit{The Mechanics of Proof}.\\
+\indnt{}\url{https://hrmacbeth.github.io/math2001/}\\
+This work focuses on proof techniques in mathematics; to simplify learning it uses tactics developed by the author.
 \end{itemize}
 
 \subsection*{Acknowledgment}
