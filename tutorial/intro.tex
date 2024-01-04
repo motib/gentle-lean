@@ -5,7 +5,7 @@
 
 Lean 4 is a \emph{proof assistant}. You enter your proof into Lean in a formal language and the system checks the correctness of the proof. It displays the current set of hypotheses and goals, and it is capable of performing many simple proofs automatically. This tutorial is, as its name states, a gentle introduction to Lean intended for students and others who have no previous experience with a proof assistant.
 
-Complete Lean proofs of theorems of arithmetic and logic are given. The source code is heavily commented and additional explanations are given. Proof tactics are introduced one at a time as needed as are tips on syntactical issues. Tables of keyboard shortcuts, tactics and tips are given in the appendices.
+Complete Lean proofs of theorems of arithmetic and logic are given. The source code is heavily commented and additional explanations are given. As you gain more experience with Lean, the number of comments on a proof is reduced. Proof tactics are introduced one at a time as needed as are tips. Tables of keyboard shortcuts, tactics and tips are given in the appendices. The tips include information on definitions and notations used by Lean.
 
 This tutorial limits itself to proving properties of integers and natural numbers, for example, theorems on greatest common denominators and prime numbers. Beyond that you need a basic knowledge of propositional and first-order logic as found in introductory textbooks.\footnote{Only tactics are used in the proofs and they are applied one at a time.}
 
@@ -23,14 +23,14 @@ You \emph{must} work within a project framework as described in\\ \indnt\url{htt
 
 \subsection*{Tips for working with Lean}
 
-\boxed{Tip Infoview}{infoview}{Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. To understand the effect of applying a tactic, I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.}
+\boxed{Tip: Infoview}{infoview}{Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. To understand the effect of applying a tactic, I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.}
 
-\boxed{Tip tactic}{tactic}{If you hover over a tactic its specification will be displayed.}
+\boxed{Tip: tactic}{tactic}{If you hover over a tactic its specification will be displayed.}
 
 For example, the specification of the tactic !exact! is\\
 \indnt{}!exact e! closes the main goal if its target type matches that of !e!.
 
-\boxed{Tip theorem}{theorem}{You can display the statement of a theorem by hovering over its name.}
+\boxed{Tip: theorem}{theorem}{You can display the statement of a theorem by hovering over its name.}
 
 Theorems are defined to be widely applicable, so initially you will not be able to understand the full statement of a theorem. In this tutorial only natural numbers and integers are used, so you can interpret the theorems narrowly, for example,\\
 \indnt{}!dvd_mul_right (a b : Nat) : a ∣ a * b!

@@ -1,0 +1,207 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{Induction}
+
+\subsection{Sum of a sequence}
+
+In this section we will prove theorems using induction. The linear display of expressions in Infoview is hard to follow so we will write the expressions in mathematical notation.
+
+The first program we prove is the one usually used to introduce induction. \[
+\sum_{k=1}^{n} k = \frac{n(n+1)}{2}\,.
+\]
+We import !Finset! for finite sets and !BigOperators! which enables the use of the operators \Verb+∑+ (\Verb+\sum+) and \Verb+∏+  (\Verb+\prod+).
+\begin{Verbatim}
+import Mathlib.Tactic
+import Mathlib.Data.Nat.Basic
+import Mathlib.Algebra.BigOperators.Basic
+namespace gentle
+open Nat Finset BigOperators
+\end{Verbatim}
+
+\boxed{Tip: \Verb+Finset+}{finset}{Given a finite set of numbers \Verb+s+ and a function \Verb+f+ over these numbers, \Verb+Finset+ defines the expressions \Verb+∑ x in s f x+ and \Verb+∏ x in s f x+.}
+
+\boxed{Tip: \Verb+range+}{range}{\Verb+range n+ is defined as the set of natural numbers less than \Verb+n+.}
+
+Since !range n! is $1,2,\ldots,n-1$, to get the set of natural numbers $1,2,\ldots,n$ the proof will use !range (n + 1)!. We will use $r(n+1)$ for this sequence of numbers:
+\[
+\sum_{i=r(n+1)} i = \frac{n(n+1)}{2}\,.
+\]
+\begin{Verbatim}[firstnumber=last]
+theorem sum_id (n : ℕ) :
+    ∑ i in range (n + 1), i = n * (n + 1) / 2 := by
+  symm
+  have : 0 < 2 := by norm_num
+\end{Verbatim}
+
+This first steps in the proof are to replace the goal with the symmetric goal
+\[
+\frac{n(n+1)}{2} = \sum_{i=r(n+1)} i\,,
+\]
+and to prove the trivial hypothesis $0<2$. The hypothesis is \emph{anonymous} and is subsequently accessed as !this!.
+
+\boxed{Tactic: \Verb+symm+}{symm}{Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.}
+
+\boxed{Tip: Anonymous hypothesis}{this}{A hypothesis can be unamed and can subsequently be accessed as \Verb+this+.}
+
+Next, division is replaced by multiplication which is easier to work with.
+\[
+n(n+1) = 2\sum_{i=r(n+1)} i\,.
+\]
+\begin{Verbatim}[firstnumber=last]
+  apply Nat.div_eq_of_eq_mul_right this
+    -- div_eq_of_eq_mul_right:
+    --   (0 < n) ∧ (m = n * k) → m / n = k
+\end{Verbatim}
+
+The proof continues by induction, where !k! is the variable of induction and !ih! is the inductive hypothesis.
+\begin{Verbatim}[firstnumber=last]
+  induction' n with k ih
+\end{Verbatim}
+
+\boxed{Tactic: \Verb+induction'+}{induction}{To prove a goal with \Verb+n+ by induction, specify the induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.}
+
+The base case for $k=0$ is proved using Lean's simplifier.
+\[
+0(0+1) = 2*\sum_{i=0(0+1)} i = 2\cdot 0(0+1)
+\]
+\begin{Verbatim}[firstnumber=last]
+  · simp
+\end{Verbatim}
+
+\boxed{Tactic: \Verb+simp+}{simp}{The \Verb+simp+ tactic uses lemmas and hypotheses in \Verb+Mathlib+ to simplify a goal or hypothesis.}
+For the inductive step we assume that the theorem holds for $k$ and prove that it holds for $k+1$. The proof starts by separating out the last term of the sum. The notation is a bit clumsy because we aren't replacing $(k+1)+1$ by $k+2$.
+\[
+(k+1)((k+1)+1)=2\sum_{i=r((k+1)+1)} i=2\left(\sum_{i=r(k+1)} i + (k+1)\right)\,.
+\]
+\begin{Verbatim}[firstnumber=last]
+  · rw [Finset.sum_range_succ]
+      -- Finset.sum_range_succ:
+      -- ∑ x in range (n + 1), f x = ∑ x in range n, f x + f n
+\end{Verbatim}
+
+Next the distributive law is used.
+\[
+(k+1)((k+1)+1)=2\sum_{i=r(n)} i + 2(k+1)\,.
+\]
+\begin{Verbatim}[firstnumber=last]
+    rw [mul_add 2]
+      -- mul_add: a * (b + c) = a * b + a * c
+\end{Verbatim}
+
+Substitute the inductive hypothesis.
+\[
+(k+1)((k+1)+1)=k * (k+1) + 2(k+1)\,.
+\]
+\begin{Verbatim}[firstnumber=last]
+    rw [← ih]
+\end{Verbatim}
+Lean is using the successor function which is now changed to $+1$ and the proof concludes with a simple calculation that can be performed by the tactic !ring!.
+\begin{Verbatim}[firstnumber=last]
+    rw [succ_eq_add_one]
+      -- succ_eq_add_one : succ n = n + 1
+    ring
+  done
+\end{Verbatim}
+
+\subsection{Inductive definition of addition}
+
+This subsection demonstrates inductive definitions and the tactic !rfl! (\emph{reflexive}).
+
+Here is an inductive definition of natural numbers. The program is enclosed in the namespace !gentle! to avoid clashing with predefined !Nat!. After defining !Nat! we open its namespace so that we can use !zero! and !succ! without prefixes.
+\begin{Verbatim}
+namespace gentle
+
+inductive Nat
+| zero : Nat
+| succ : Nat → Nat
+
+namespace Nat
+\end{Verbatim}
+
+The next step is to defined addition inductively.
+\begin{Verbatim}[firstnumber=last]
+def add : Nat → Nat → Nat
+  | x, zero => x
+  | x, succ y => succ (add x y)
+\end{Verbatim}
+Although we normally think of addition as a function of two variables $\textit{add}(a,b)$, there are advantages to defining it as a function that takes one variable $\textit{add}(a)$ resulting in another function $\textit{add}_{a}(b)$ that gives the sum of $a$ and $b$.\footnote{This is called \emph{currying} but an explanation is outside the scope of this tutorial.}
+
+The first theorem we proof is $0+n=n$ for all natural numbers $n$. The proof is by induction and the base case $0+0=0$ follows by !rfl! from the base case of the definition of !add!.
+\begin{Verbatim}[firstnumber=last]
+theorem zero_add (n : Nat) :
+    add zero n = n := by
+  induction' n with k ih
+  · rfl
+\end{Verbatim}
+
+\boxed{Tactic: \Verb+rfl+}{rfl}{\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.}
+
+Consider the goal that appears below:\\
+\indnt{}!((m + k) + 1) + 1 = (m + (k + 1)) + 1!\\
+\emph{By definition} of !add! above, !(a + (b + 1)! is !(a + b) + 1! so the right-hand side of the equation !(m + (k + 1)) + 1! means !((m + k) + 1) + 1 ! which is the left-hand side. Therefore, the tactic !rfl! solves it. You should similarly check the other uses of !rfl! below.
+
+The inductive step is to prove $0+(k+1)=(0+k)+1$. Using definition of !add! to rewrite the left-hand side, we get $(0+k)+1=k+1$ which can be solved using the inductive hypothesis that $0+k=k$.
+\begin{Verbatim}[firstnumber=last]
+  · rw [add]
+    rw [ih]
+  done
+\end{Verbatim}
+
+Next we prove $(m+1)+n = (m+n)+1$ by induction. The base case $(m+1)+0=m+1$ is immediate from the base case of the definition of !add!.
+\begin{Verbatim}[firstnumber=last]
+theorem succ_add (m n : Nat) :
+    add (succ m) n = succ (add m n) := by
+  induction' n with k ih
+  · rfl
+\end{Verbatim}
+
+The inductive step is to prove $(m+1) + (k+1) = (m + (k+1)) + 1$. From the definition of !add! it follows that $((m+1) + k) + 1 = (m + (k+1)) + 1$.
+\begin{Verbatim}[firstnumber=last]
+  · rw [add]
+\end{Verbatim}
+Substituting the inductive hypothesis $(m+1) + k = (m+k) + 1$ results in $((m+k) + 1) + 1 = (m + (k+1)) + 1$, which, as noted above, is definitionally equivalent and can be solved by !rfl!.
+\begin{Verbatim}[firstnumber=last]
+    rw [ih]
+    rfl
+  done
+\end{Verbatim}
+
+\subsection{Multiple steps in a proof}
+
+In this section we explain two ways to shorten proofs in Lean by performing more than one step in the same action. We start with the proof of $(m|n \vee m|k) \rightarrow m | mk$ using methods already encountered.
+
+Since the hypothesis is a disjunction, the goal must be proved separately for each disjunct using !rcases! to create separate hypotheses. Furthermore, since $m|n$ is defined as $\exists a (n=ma)$ so new variables must be introduced (page~\pageref{p.rcases}).
+\begin{Verbatim}
+theorem div_prod1 {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) :
+    m ∣ n * k := by
+  rcases h with ⟨a, h1⟩ | ⟨b, h2⟩
+\end{Verbatim}
+The new hypotheses are !h1 : n = m * a! and !h2 : k = m * b! which can be used to rewrite the goals. The rest of the proof is straightforward.
+\begin{Verbatim}[firstnumber=last]
+  · rw [h1]
+    rw [mul_assoc]
+    apply dvd_mul_right
+      -- dvd_mul_right: a | a * b
+  · rw [h2]
+    rw [mul_comm]
+    rw [mul_assoc]
+    apply dvd_mul_right
+  done
+\end{Verbatim}
+
+Proofs can be shortened by sequentially rewrites of the goal.\\
+\indnt{}!· rw [h1, mul_assoc]!\\
+\indnt{}!· rw [h2, mul_comm, mul_assoc]!
+
+The hypotheses !h1! and !h2! replace !m ∣ n! and !m ∣ k! by the definitionally equivalent !n = m * a! and !k = m * b!, so !rfl! can be used to perform the substitutions without creating hypotheses.
+\begin{Verbatim}
+theorem div_prod2 {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) :
+    m ∣ n * k := by
+  rcases h with ⟨a, rfl⟩ | ⟨b, rfl⟩
+  · rw [mul_assoc]
+    apply dvd_mul_right
+  · rw [mul_comm, mul_assoc]
+    apply dvd_mul_right
+  done
+\end{Verbatim}

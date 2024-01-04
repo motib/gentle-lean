@@ -26,39 +26,10 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 \Verb+⟩+   & \Verb+\>+\\
 \Verb+⊢+   & \Verb+\|-+, \verb+\vdash+ \\
 \Verb+h₁+ & \Verb+h\1+\\
+\Verb+∑+ & \Verb+\sum+\\
+\Verb+∏+ & \Verb+\prod+\\
 \end{tabular}
 \end{center}
-
-\newpage
-
-\section{Tips}
-
-\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
-\hline
-Topic & Page & Tip\\
-\hline
-Associativity&\pageref{p.associativity}&The default associativity in Lean is \emph{left}: \verb!a + b + c! means \verb!(a + b) + c!. Even if the operation is associative, you still have to prove associativity for a given expression.\\\hline
-
-Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\|+.\\\hline
-
-\Verb+done+&\pageref{p.done}&All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.\\\hline
-
-Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
-
-Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
-
-Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.\\\hline
-
-Implicit&\pageref{p.implicit}&Parameters declared with braces, such as \Verb+{a b c : Int}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.\\\hline
-
-Negation&\pageref{p.negation}&A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.\\\hline
-
-Right-to-left&\pageref{p.right-to-left}&The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.\\\hline
-
-Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be displayed.\\\hline
-
-Theorem&\pageref{p.theorem}&You can display the statement of a theorem by hovering over its name.\\\hline
-\end{tabular}
 
 \newpage
 
@@ -83,6 +54,8 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+have+&\pageref{p.have}&Introduces a new named hypothesis for use in the proof.\\\hline
 
+\Verb+induction'+&\pageref{p.induction}&To prove a goal with \Verb+n+ by induction, specify the induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.\\\hline
+
 \Verb+intro+&\pageref{p.intro}&Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we simply substitute a variable that is this arbitrary value.\\
 &&If the goal is \Verb+⊢P→Q+ then \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.\\
 &&For an existential goal \Verb+∃ a A(a)+, \Verb+intro c+ introduces \Verb+A(c)+ as the new goal.\\\hline
@@ -93,24 +66,73 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+norm_num+&\pageref{p.norm-num}&Proves numerical equalities and inequalities that do not use variables.\\\hline
 
+\Verb+range+&\pageref{p.range}&\Verb+range n+ is defined as the set of natural numbers less than $n$.\\\hline
+
 \Verb+rcases+&\pageref{p.rcases}&Given a hypothesis or goal that is a disjunction \Verb+A∨B+ the tactic \Verb+rcases+ splits it into two sub-hypotheses or subgoals \Verb+A+ and \Verb+B+.\\
 &&For a disjunctive hypothesis, prove the goal under both sub-hypotheses. For a disjunctive goal, prove one of the subgoals.\\\hline
 
 \Verb+rcases+&\pageref{p.rcases-with}&\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.\\\hline
 
-\Verb+ring+&&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
+\Verb+rfl+&\pageref{p.rfl}&\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.\\\hline
 
-\Verb+rintro+&\pageref{p.rintro}&Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.\\\hline
 \end{tabular}
 
 \begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
+
+\Verb+ring+&\pageref{p.ring}&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
+
+\Verb+rintro+&\pageref{p.rintro}&Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.\\\hline
+
 \Verb+rw+&\pageref{p.rw}&\Verb+rw [eqn]+, where \Verb+eqn+ is an equation or an equivalence, rewrites the goal by replacing occurrences of the the left-hand side of \Verb+eqn+ with the right-hand side.\\
 &&\Verb+rw [← eqn]+ rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side.\\
 &&\Verb+rw [eqn] h+ and \Verb+rw [← eqn] h+ rewrite expressions in the hypothesis \Verb+h+.\\\hline
 
+\Verb+simp+&\pageref{p.simp}&The \Verb+simp+ tactic uses lemmas and hypotheses in \Verb+Mathlib+ to simplify a goal or hypothesis.\\\hline
+
 \Verb+sorry+&\pageref{p.sorry}&Proves any theorem.\\\hline
+
+\Verb+symm+&\pageref{p.symm}&Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.\\\hline
 
 \Verb+use+&\pageref{p.use}&Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.\\\hline
 
 \end{tabular}
+
+\newpage
+
+\section{Tips}
+
+\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
+\hline
+Topic & Page & Tip\\
+\hline
+Anonymous&\pageref{p.this}&A hypothesis can be unamed and can be subsequently accessed as \Verb+this+.\\
+hypothesis&\\\hline
+Associativity&\pageref{p.associativity}&The default associativity in Lean is \emph{left}: \verb!a + b + c! means \verb!(a + b) + c!. Even if the operation is associative, you still have to prove associativity for a given expression.\\\hline
+
+Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\|+.\\\hline
+
+\Verb+done+&\pageref{p.done}&All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.\\\hline
+
+Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
+
+\Verb+Finset+&\pageref{p.finset}&Given a finite set of numbers \Verb+s+ and a function \Verb+f+ over these numbers, \Verb+Finset+ defines the expressions \Verb+∑ x in s f x+ and \Verb+∏ x in s f x+.\\\hline
+
+Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
+
+Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.\\\hline
+
+Implicit&\pageref{p.implicit}&Parameters declared with braces, such as \Verb+{a b c : Int}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.\\\hline
+
+Negation&\pageref{p.negation}&A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.\\\hline
+
+\Verb+range+&\pageref{p.range}&\Verb+range n+ is defined as the set of natural numbers less than \Verb+n+.\\\hline
+
+Right-to-left&\pageref{p.right-to-left}&The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.\\\hline
+
+Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be displayed.\\\hline
+
+Theorem&\pageref{p.theorem}&You can display the statement of a theorem by hovering over its name.\\\hline
+
+\end{tabular}
+

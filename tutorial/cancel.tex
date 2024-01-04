@@ -10,7 +10,7 @@ Here we prove theorems of arithmetic related to cancellation properties:
 
 The library !import Mathlib.Data.Int.Basic! is imported because negative numbers are integers, not natural numbers.
 
-\boxed{Tip associativity}{associativity}{The associativity of the operators \Verb=+= and \Verb+*+ is defined to be \emph{left}:\\\smallskip
+\boxed{Tip: associativity}{associativity}{The associativity of the operators \Verb=+= and \Verb+*+ is defined to be \emph{left}:\\\smallskip
 \verb!a + b + c! is \verb!(a + b) + c! and \verb!a * b * c! is \verb!(a * b) * c!.\\\smallskip
 Use \Verb+add\_assoc+ and \Verb+mul\_assoc+ to change the associativity of an expression.}
 
@@ -33,13 +33,13 @@ theorem neg_add_cancel_left (a b : Int) :
   done
 \end{Verbatim}
 
-\boxed{Tactic \Verb+rw+}{rw}{\Verb+rw [eqn]+, where \Verb+eqn+ is an equation or an equivalence, rewrites the goal by replacing occurrences of the the left-hand side of \Verb+eqn+ with the right-hand side.\\
+\boxed{Tactic: \Verb+rw+}{rw}{\Verb+rw [eqn]+, where \Verb+eqn+ is an equation or an equivalence, rewrites the goal by replacing occurrences of the the left-hand side of \Verb+eqn+ with the right-hand side.\\
 \Verb+rw [← eqn]+ rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side.\\
 \Verb+rw [eqn] h+ and \Verb+rw [← eqn] h+ rewrite expressions in the hypothesis \Verb+h+.}
 
 The arrow !←! which is defined as ``rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side'' can seem non-intuitive: when !← add_assoc! is used to rewrite the goal !-a + (a + b) = b! above, we are rewriting the \emph{left-hand side} of the goal. However, the directions are referring to the sides of \Verb+eqn+ (here, !a + b + c = a + (b + c)!) where occurrences of \emph{its} right-hand side are !a + (b + c)! are replaced by \emph{its} left-hand side !a + b + c!.
 
-\boxed{Tactic \Verb+exact+}{exact}{The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.}
+\boxed{Tactic: \Verb+exact+}{exact}{The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.}
 
 The parameter !h : a + b = a + c! in the theorem !add_left_cancel! is a hypothesis that is used in the proof. It must be provided when the theorem is applied (see below).
 \begin{Verbatim}[firstnumber=last]
@@ -64,7 +64,7 @@ but the integer parameters are not given. When the hypothesis is matched against
 Clearly, all three expressions are of type !Int! so Lean can infer their values and types when they are used:\\
 \indnt{}!exact add_left_cancel (a * 0) (a * 0) 0 h!
 
-\boxed{Tip implicit}{implicit}{Parameters declared with braces, such as \Verb+\{a b c : Int\}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.}
+\boxed{Tip: implicit}{implicit}{Parameters declared with braces, such as \Verb+\{a b c : Int\}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.}
 
 The proof of the following theorem is similar to the previous two. First the hypothesis !h! is proved using !rw! three times and it is then used as a hypothesis in the application of !add_left_cancel!.
 \begin{Verbatim}[firstnumber=last]
