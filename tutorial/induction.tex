@@ -5,8 +5,6 @@
 
 \subsection{Sum of a sequence}
 
-In this section we will prove theorems using induction. The linear display of expressions in Infoview is hard to follow so we will write the expressions in mathematical notation.
-
 The first program we prove is the one usually used to introduce induction. \[
 \sum_{k=1}^{n} k = \frac{n(n+1)}{2}\,.
 \]
@@ -23,7 +21,9 @@ open Nat Finset BigOperators
 
 \boxed{Tip: \Verb+range+}{range}{\Verb+range n+ is defined as the set of natural numbers less than \Verb+n+.}
 
-Since !range n! is $1,2,\ldots,n-1$, to get the set of natural numbers $1,2,\ldots,n$ the proof will use !range (n + 1)!. We will use $r(n+1)$ for this sequence of numbers:
+The linear display of expressions in Infoview is hard to follow so we will write the expressions in mathematical notation.
+
+Since !range n! is $1,2,\ldots,n-1$, to get the set of natural numbers $0, 1,2,\ldots,n$ the proof will use !range (n + 1)!. We will use $r(n+1)$ for this sequence of numbers:
 \[
 \sum_{i=r(n+1)} i = \frac{n(n+1)}{2}\,.
 \]
@@ -34,17 +34,22 @@ theorem sum_id (n : ℕ) :
   have : 0 < 2 := by norm_num
 \end{Verbatim}
 
-This first steps in the proof are to replace the goal with the symmetric goal
+This first step in the proof are to replace the goal with the symmetric goal
 \[
-\frac{n(n+1)}{2} = \sum_{i=r(n+1)} i\,,
+\frac{n(n+1)}{2} = \sum_{i=r(n+1)} i\,.
 \]
-and to prove the trivial hypothesis $0<2$. The hypothesis is \emph{anonymous} and is subsequently accessed as !this!.
 
 \boxed{Tactic: \Verb+symm+}{symm}{Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.}
 
+The next step is to prove the trivial hypothesis $0<2$. The hypothesis is \emph{anonymous} and is subsequently accessed as !this!.
+
+\begin{Verbatim}[firstnumber=last]
+  have : 0 < 2 := by norm_num
+\end{Verbatim}
+
 \boxed{Tip: Anonymous hypothesis}{this}{A hypothesis can be unamed and can subsequently be accessed as \Verb+this+.}
 
-Next, division is replaced by multiplication which is easier to work with.
+Division is replaced by multiplication which is easier to work with.
 \[
 n(n+1) = 2\sum_{i=r(n+1)} i\,.
 \]
@@ -80,7 +85,7 @@ For the inductive step we assume that the theorem holds for $k$ and prove that i
       -- ∑ x in range (n + 1), f x = ∑ x in range n, f x + f n
 \end{Verbatim}
 
-Next the distributive law is used.
+Next, the distributive law is used.
 \[
 (k+1)((k+1)+1)=2\sum_{i=r(n)} i + 2(k+1)\,.
 \]
@@ -108,7 +113,7 @@ Lean is using the successor function which is now changed to $+1$ and the proof 
 
 This subsection demonstrates inductive definitions and the tactic !rfl! (\emph{reflexive}).
 
-Here is an inductive definition of natural numbers. The program is enclosed in the namespace !gentle! to avoid clashing with predefined !Nat!. After defining !Nat! we open its namespace so that we can use !zero! and !succ! without prefixes.
+Here is an inductive definition of natural numbers. The program is enclosed in the namespace !gentle! to avoid clashing with predefined !Nat!. After defining !Nat! we open its namespace so that we can use !zero! and !succ! without the prefix !Nat!.
 \begin{Verbatim}
 namespace gentle
 
@@ -137,9 +142,9 @@ theorem zero_add (n : Nat) :
 
 \boxed{Tactic: \Verb+rfl+}{rfl}{\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.}
 
-Consider the goal that appears below:\\
+Consider the goal:\\
 \indnt{}!((m + k) + 1) + 1 = (m + (k + 1)) + 1!\\
-\emph{By definition} of !add! above, !(a + (b + 1)! is !(a + b) + 1! so the right-hand side of the equation !(m + (k + 1)) + 1! means !((m + k) + 1) + 1 ! which is the left-hand side. Therefore, the tactic !rfl! solves it. You should similarly check the other uses of !rfl! below.
+\emph{By definition} of !add!, !(a + (b + 1)! is !(a + b) + 1! so the right-hand side of the equation !(m + (k + 1)) + 1! means !((m + k) + 1) + 1 ! which is the left-hand side. Therefore, the tactic !rfl! solves it. You should similarly check the other uses of !rfl! below.
 
 The inductive step is to prove $0+(k+1)=(0+k)+1$. Using definition of !add! to rewrite the left-hand side, we get $(0+k)+1=k+1$ which can be solved using the inductive hypothesis that $0+k=k$.
 \begin{Verbatim}[firstnumber=last]
