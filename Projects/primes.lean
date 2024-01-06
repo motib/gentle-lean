@@ -76,3 +76,14 @@ theorem exists_infinite_primes (n : ℕ) :
     -- Since both conjuncts are hypotheses,
     --   the proof is complete
   done
+
+theorem exists_infinite_primes_sorry (n : ℕ) :
+    ∃ p, n ≤ p ∧ Nat.Prime p := by
+  let p := minFac (n !  + 1)
+  have f1 : n ! + 1 ≠ 1 := by
+    apply Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have pp : Nat.Prime p := by
+    apply minFac_prime f1
+  have np : n ≤ p       := by sorry
+  use p
+  done

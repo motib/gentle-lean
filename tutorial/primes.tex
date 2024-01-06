@@ -150,19 +150,16 @@ The current goal is now $\exists p( n \leq p \wedge \mathit{prime}(p))$. The exi
 
 Even without the comments the proof is not short. When proving complex theorems it is convenient to assume that certain lemmas are true, and then when the main proof is complete to return to prove the lemmas. In Lean the tactic !sorry! is accepted as a proof of anything. For example, the eight-line proof of the hypothesis !np! can be proved by !sorry!. Lean will issue a stern warning to tell you not to rest on your laurels.
 
-\vspace{-2ex}
-
 \begin{Verbatim}[numbers=none]
-theorem exists_infinite_primes (n : ℕ) : 
+theorem exists_infinite_primes_sorry (n : ℕ) :
     ∃ p, n ≤ p ∧ Nat.Prime p := by
   let p := minFac (n !  + 1)
-  have f1 : n ! + 1 ≠ 1 := by ...
-  have pp : Nat.Prime p := by ...
+  have f1 : n ! + 1 ≠ 1 := by
+    apply Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have pp : Nat.Prime p := by
+    apply minFac_prime f1
   have np : n ≤ p       := by sorry
-  apply Exists.intro p
-  apply And.intro
-  · apply np
-  · apply pp
+  use p
   done
 \end{Verbatim}
 
