@@ -3,11 +3,9 @@
 
 \section{Propositional logic}
 
-This section demonstrates tactics that can be used to prove theorems that use the operators of propositional logic. The final subsection presents the tactic for tautologies, which can immediately complete some proofs.
-
 \subsection{Conjunction and equivalence}
 
-When a theorem has equivalence (↔) as the main operator and it must be split into two subgoals, one for modus ponens (mp) direction and one for the modus ponens reversed (mpr) direction.
+When a theorem has equivalence (!↔!) as the main operator and it must be split into two subgoals, one for modus ponens (!mp!) direction and one for the modus ponens reversed (!mpr!) direction.
 
 \begin{Verbatim}
 theorem lt_iff_le_eq {a b : Int} : 
@@ -21,23 +19,17 @@ theorem lt_iff_le_eq {a b : Int} :
 
 \boxed{Tactic: \Verb+constructor+}{constructor}{Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.}
 
-The current goal is an implication whose premise and conclusion are both conjunctions. We can use !intro! to introduce the premise as a hypothesis and then !rcases! (page~\pageref{p.rcases}) to split the conjunctive hypothesis into two subgoals to be proved.
+The current goal is an implication whose premise and conclusion are both conjunctions. We can use !intro! to introduce the premise as a hypothesis and then !rcases! (page~\pageref{p.rcases}) to split the conjunctive hypothesis into two subgoals to be proved.\\
 \indnt{}!intro h!\\
 \indnt{}!rcases h with ⟨h0, h1⟩!\\
 It is possible to combine the two tactics into the tactic !rintro!.
-\begin{Verbatim}[firstnumber=last]
-  -- Prove the mp goal
-  · rintro ⟨h0, h1⟩
-\end{Verbatim}
 
-We start with the implication of the mp direction, where !rintro! introduces the hypothesis and then !constructor! splits the conjuctive goal into two subgoals.
+We start with the implication of the modus ponens direction, where !rintro! introduces the hypothesis and then !constructor! splits the conjuctive goal into two subgoals.
 \begin{Verbatim}[firstnumber=last]
   · rintro ⟨h0, h1⟩
-    -- rintro introduces the premise as a hypothesis and also
-    --   performs an rcases on the hypothesis to split it
-    --   two sub-hypotheses a ≤ b and ¬b ≤ a
-\end{Verbatim}
-\begin{Verbatim}[firstnumber=last]
+    -- Introduces the premise as a hypothesis and split it
+    --   into two sub-hypotheses a ≤ b and ¬b ≤ a
+
     constructor
       -- Creates two subgoals from the current conjunctive goal
     · exact h0
@@ -47,10 +39,11 @@ We start with the implication of the mp direction, where !rintro! introduces the
       apply h1
         -- Replace False with the negation of the hypothesis
       rw [h2]
-        -- Proof is complete since b ≤ b
 \end{Verbatim}
 
-The proof of the implication of the mpr direction is similar.
+\newpage
+
+The proof of the implication of the modus ponens reversed direction is similar.
 \begin{Verbatim}[firstnumber=last]
   · rintro ⟨h0, h1⟩
     constructor
@@ -66,7 +59,7 @@ The proof of the implication of the mpr direction is similar.
 
 \subsection{Disjunction}
 
-We now prove a theorem with an equivalence and a disjunction. In the previous theorem, we first split the equivalence into two implications. Here, tactic !rcases! is used with a theorem to split on the sign of $y$. \begin{Verbatim}
+In the previous theorem, we first split the equivalence into two implications. Here, tactic !rcases! is used with a theorem to split on the sign of $y$. \begin{Verbatim}
 theorem lt_abs {x y : Int} :
     x < |y| ↔ x < y ∨ x < -y := by
   rcases le_or_gt 0 y with h | h
@@ -74,28 +67,26 @@ theorem lt_abs {x y : Int} :
     -- le_or_gt 0 y: a ≤ b ∨ a > b
 \end{Verbatim}
 
-The equivalence goal is unchanged, but we are tasked with proving it under both hypotheses: $0\leq y$ and $0>y$. First we prove for $0\leq y$, in which case we can rewrite $|y|$ by $y$.
+The equivalence goal is unchanged, but we must prove it under both hypotheses: $0\leq y$ and $0>y$. First we prove for $0\leq y$, in which case we can rewrite $|y|$ by $y$.
 \begin{Verbatim}[firstnumber=last]
   · rw [abs_of_nonneg h]
     -- abs_of_nonneg: 0 ≤ a → |a| = a
     constructor
       -- Split iff into mp and mpr
-    · intro h'
 \end{Verbatim}
-In the mp formula, the premise is introduced as a hypothesis and the  conclusion becomes the goal $x < y \vee x < -y$. When a \emph{goal} is a disjunction, it is sufficient to prove one disjunct. (Of course, if the \emph{hypothesis} is a disjunction, we have to prove the theorem for \emph{both} possibilities.) Here we are smart enough to tell Lean that we want to prove the left disjunct, because the right one won't make any progress toward the proof.
+For the modus ponens direction, the premise is introduced as a hypothesis and the  conclusion becomes the goal $x < y \vee x < -y$. When a \emph{goal} is a disjunction, it is sufficient to prove one disjunct. Here we are smart enough to tell Lean that we want to prove the left disjunct, because the right one won't make any progress toward the proof.
 \begin{Verbatim}[firstnumber=last]
+    · intro h'
       left
-        -- The current goal is a disjunction
-        --   so tell Lean which disjunct we want to prove
       exact h'
+\end{Verbatim}
+For the modus ponens reversed direction, the hypothesis is a disjunction and we have to prove the goal for each disjunct. For the second disjunct, we have $0 ≤ y$ and $x < -y$, and Lean can prove that this implies the goal $x < y$ using the tactic !linarith!.
+
+\begin{Verbatim}[firstnumber=last]
     . intro h'
       rcases h' with h' | h'
-        -- The hypothesis is a disjunction and we have to prove
-        --   the goal for each disjunct
       · exact h'
       . linarith
-        -- The hypotheses are 0 ≤ y and x < -y
-        -- Lean can prove that this implies the goal x < y
 \end{Verbatim}
 
 \boxed{Tactic: \Verb+left+, \Verb+right+}{left-right}{If the goal is a disjunction, tell Lean which disjunction you want to prove.}
@@ -125,16 +116,14 @@ theorem T1a {A : Prop} : (¬A → A) → A := by
   by_contra h2
     -- Prove A by contradction: assume A and prove False
   apply h2
-    -- Modus ponens
   apply h1
-    -- Replace goal by the hypothesis
   exact h2
   done
 \end{Verbatim}
 
 \boxed{Tactic: \Verb+by\_contra+}{by-contra}{This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.}
 
-Here is another proof of the same theorem, this time using contraposition instead of contradiction. The result of using the tactic !contrapose! will be unfamiliar. Given the \emph{hypothesis} $\neg A \rightarrow A$, it does not change the hypothesis into $\neg A \rightarrow \neg\neg A$. Instead, the hypothesis becomes the goal $\neg(\neg A \rightarrow A)$ and the goal $A$ becomes the hypothesis $\neg A$.
+Here is another proof of the same theorem using contraposition instead of contradiction. The result of using the tactic !contrapose! is not what you might expect from the way it is usually used in logic. Given the \emph{hypothesis} $\neg A \rightarrow A$, it does not change the hypothesis into $\neg A \rightarrow \neg\neg A$. Instead, the hypothesis becomes the goal $\neg(\neg A \rightarrow A)$ and the goal $A$ becomes the hypothesis $\neg A$.
 
 This makes sense by the deduction theorem.
 \[
@@ -153,16 +142,14 @@ which using deduction is
 \neg G \vdash \neg (H_1\wedge H_2 \wedge \ldots \wedge H_n)\,.
 \]
 
-Although $\neg(\neg A \rightarrow A)$ doesn't simplify the proof, if we push negation inward (do it yourself\verb+!+) the result is $\neg A \wedge \neg A$ which is trivial to prove. The exclamation point in the tactic means that following the tactic !contrapose!, the tactic !push_neg! is called to push negation inward.
+Although $\neg(\neg A \rightarrow A)$ doesn't simplify the proof, if we push negation inward (do the calculation yourself\verb+!+) the result is $\neg A \wedge \neg A$ which is trivial to prove. The exclamation point in the tactic means that following the tactic !contrapose!, the tactic !push_neg! is called to push negation inward.
 
 \begin{Verbatim}[firstnumber=last]
 theorem T1b {A : Prop} : (¬A → A) → A := by
   intro h1
   contrapose! h1
-    -- Replace h1 by its contrapositive
-    -- Push negation inward (!)
+    -- Replace h1 by its contrapositive and push negation inward
   constructor
-    -- Split conjunction
   · exact h1
   · exact h1
   done
@@ -178,41 +165,32 @@ The hypothesis !h1! is !A ∧ ¬B! while the goal is !A!. We use !rcases! to spl
 theorem T2 {A B : Prop} : ((A → B) → A) → A := by
   intro h1
   contrapose! h1
-    -- Replace h1 by its contrapositive
-    --   and push negation inward
+
   constructor
-    -- Split conjunction
   · contrapose! h1
-      -- Goal is A → B, h1 is ¬A
       -- Make ¬(A → B) the hypothesis and A the goal
-      -- Push negation inward (!)
+      -- Push negation inward
     rcases h1 with ⟨h2, _⟩
       -- Split the hypothesis
     · exact h2
       -- Only need to use left subformula
-      --   of the conjunction
   · exact h1
   done
 \end{Verbatim}
 
 \boxed{Tip: Don't care}{dont-care}{When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.}
 
-The next theorem we want to prove $(A\rightarrow B) \vee (B \rightarrow C)$ has a disjunction operator as its main operator. We prefer to carry out the proof using only the implication operator, so we first try to prove the hypthosis $\neg(A\rightarrow B) \rightarrow (B \rightarrow C)$.
-
-When the hypothesis has been proved, use the \Verb+contrapose!+ to negate the hypothesis and the goal and then exchang them. Moving the negations inward results in a hypothesis that is exactly the goal.
+The next theorem we want to prove $(A\rightarrow B) \vee (B \rightarrow C)$ has a disjunction operator as its main operator. We prefer to carry out the proof using only the implication operator, so we first try to prove the hypthosis $\neg(A\rightarrow B) \rightarrow (B \rightarrow C)$. When the hypothesis has been proved, we use the \Verb+contrapose!+ to negate the hypothesis and the goal, and then exchange them. Moving the negations inward results in a hypothesis that is exactly the goal.
 \begin{Verbatim}[firstnumber=last]
 theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
   have h1 : ¬(A → B) → (B → C) := by
-    -- Prove the implication equivalent to the disjunction
     intro h2
     intro h3
-\end{Verbatim}
-\begin{Verbatim}[firstnumber=last]
     contrapose! h2
-      -- Contrapositive of ¬(A → B)
     intro
       -- No need to name the new hypothesis
     exact h3
+
   contrapose! h1
   exact h1
   done
@@ -223,12 +201,13 @@ theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
 Tautologies in propositional logic can be proved very easily using semantic methods such as truth tables and semantic tableaux. Lean can prove tautologies so the above theorems can be proved immediately using the tactic !tauto!.
 
 \begin{Verbatim}[numbers=none]
-theorem T1a {A : Prop} : (¬A → A) → A := by tauto
-theorem T2  {A B : Prop} : ((A → B) → A) → A  := by tauto
+theorem T1a {A : Prop}     : (¬A → A) → A      := by tauto
+theorem T2  {A B : Prop}   : ((A → B) → A) → A := by tauto
 theorem T3  {A B C : Prop} : (A → B) ∨ (B → C) := by tauto
 \end{Verbatim}
 \boxed{Tactic: \Verb+tauto+}{tauto}{If a tautology can be formed from the hypotheses and the goal, the proof can be immediately completed using this tactic.}
-The following theorem that !tauto! works when the tautology is formed from both a hypothesis and a goal.\\
-!theorem T0a {A : Prop} (h : ¬A → A) : A := by tauto!\\
+The following theorem shows that !tauto! works when the tautology is formed from both a hypothesis and a goal.\\
+\indnt{}!theorem T0a {A : Prop} (h : ¬A → A) : A := by tauto!\\
+
 This theorem shows that !tauto! works on substitution instances of a tautology.\\
-!theorem T0b {a : Nat} : ¬a = 0 ∨ a = 0 := by tauto!
+\indnt{}!theorem T0b {a : Nat} : ¬a = 0 ∨ a = 0 := by tauto!

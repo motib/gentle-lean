@@ -25,6 +25,7 @@ The hypothesis is $\forall m, n \in N : (\min (m,n) = \min (n,m))$. For the boun
     intro x y
       -- Introduce arbitrary x y in place of ∀
 \end{Verbatim}
+
 \boxed{Tactic: \Verb+intro+}{intro}{Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we substitute a variable that is this arbitrary value.
 \smallskip\\
 If the goal is is \Verb+⊢P→Q+, \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.}

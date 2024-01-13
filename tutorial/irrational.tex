@@ -40,7 +40,7 @@ Split the disjunctive hypothesis $2 | m \vee 2 | m$ into two identical hypothese
   rcases h with h₁ | h₁
     -- Splits disjunctive hypothesis h: 
     --   2 | m ∨ 2 ∣ m  into
-    --   two (identical ) subformulas 2 ∣ m, 2 ∣ m
+    --   two (identical) subformulas 2 ∣ m, 2 ∣ m
 \end{Verbatim}
 Prove both the (identical) subformulas.
 \begin{Verbatim}[firstnumber=last]
@@ -110,7 +110,6 @@ We now prove a sequence of five hypotheses.
   have h₁ : 2 * (2 * k ^ 2) = 2 * n ^ 2 := by
     rw [← sqr_eq]
       -- sqr_eq : m ^ 2 = 2 * n ^ 2
-      -- ← is right to left rewriting of 2 * n ^ 2 in h₁
       -- New goal is 2 * (2 * k ^ 2) = m ^ 2
     rw [meq]
       -- Rewrite m = k * 2 in h₁
@@ -121,16 +120,13 @@ We now prove a sequence of five hypotheses.
 
 \boxed{Tactic: \Verb+ring+}{ring}{Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, only addition, subtraction, multiplication and powers by natural numbers can be used. The division operation is not defined in the ring of integers because $1/2$ is not an integer.}
 
-It is easy to see that $2(2k^2)=(k\cdot 2)^2$ can be proved using only the definition of positive powers of integers as repeated multiplication, and the laws of associativity and commutativity of the integers.
+$2(2k^2)=(k\cdot 2)^2$ can be proved using only the definition of positive powers of integers as repeated multiplication, and the laws of associativity and commutativity of the integers.
 
 The theorem !mul_right_inj'! is applied assuming that $2\neq 0$, but this is a simple property of natural numbers which can be proved by the tactic !norm_num!.
 \begin{Verbatim}[firstnumber=last]
   have h₂ : 2 * k ^ 2 = n ^ 2 := by
     apply (mul_right_inj' (by norm_num : 2 ≠ 0)).mp h₁
       -- mul_right_inj': a ≠ 0 → (a * b = a * c ↔ b = c)
-      --   where a = 2, b = 2 * k ^ 2, c = n ^ 2
-      -- norm_num: solves equalities and inequalities like 2 ≠ 0
-      -- Since 2 ≠ 0, MP on h₁ proves h₂
 \end{Verbatim}
 
 \boxed{Tactic: \Verb+norm\_num+}{norm-num}{Proves numerical equalities and inequalities that do not use variables.}
@@ -139,48 +135,31 @@ The theorem !mul_right_inj'! is applied assuming that $2\neq 0$, but this is a s
   have h₃ : 2 ∣ n := by
     apply even_of_even_sqr
       -- even_of_even_sqr (lemma) : 2 ∣ m ^ 2 → 2 ∣ m
-      --   where m = n
       -- New goal is 2 ∣ n ^ 2
     rw [← h₂]
-      -- Rewrite right-to-left of h₂ in the goal
       -- New goal is 2 ∣ 2 * k ^ 2
     apply dvd_mul_right
-      -- dvd_mul_right : a ∣ a * b,
-      --   where a = 2, b = k ^ 2 to prove h₃
-\end{Verbatim}
-\vspace*{-1em}
-\begin{Verbatim}[firstnumber=last]
+      -- dvd_mul_right : a ∣ a * b
+
     have h₄ : 2 ∣ Nat.gcd m n := by
       apply Nat.dvd_gcd
         -- Nat.dvd_gcd : (k ∣ m ∧ k | m) → k ∣ gcd m n
-        --   k = 2, m = m, n = n
         -- New goals are 2 ∣ m and 2 ∣ n
       · exact two_dvd_m
-        -- First goal is two_dvd_m
       . exact h₃
-        -- Second goal is h₃
 \end{Verbatim}
-\vspace*{-1em}
+
+The sequence of hypotheses that have been proved terminates in !h₅ : 2 ∣ 1!, but !norm_num! can prove that this is the negation of the true formula   !1 ∣ 2!, thereby deriving a contradiction.
+
 \begin{Verbatim}[firstnumber=last]
   have h₅ : 2 ∣ 1 := by
     rw [Coprime.gcd_eq_one] at h₄
-      -- if m and n are coprime then gcd m n = 1,
-      --   where m = 2 and n = 1
-      -- Apply to h₄
+      -- if m and n are coprime then gcd m n = 1
       -- New goals are 2 ∣ 1 and m, n are coprime
     exact h₄
       -- Proves 2 ∣ 1
     exact coprime_mn
       -- Assumption that m, n are coprime
-\end{Verbatim}
-
-
-The sequence of hypotheses that have been proved terminates in !h₅ : 2 ∣ 1!, but !norm_num! can prove that this is the negation of the true formula   !1 ∣ 2!, thereby deriving a contradiction.
-
-\begin{Verbatim}[firstnumber=last]
   norm_num at h₅
-    -- Goal is 2 ∣ 1
-    -- norn_num can prove that this is False
-    -- Proving the contradiction of the initial assumption
   done
 \end{Verbatim}

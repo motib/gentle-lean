@@ -10,15 +10,17 @@ This work is licensed under a Creative Commons Attribution 4.0 International Lic
 
 ### Overview
 
-Lean 4 is a *proof assistant*. You enter your proof into Lean in a formal language and the system checks the correctness of the proof. It displays the current set of hypotheses and goals, and it is capable of performing many simple proofs automatically. This tutorial is, as its name states, a gentle introduction to Lean intended for students and others who have no previous experience with a proof assistant.
+Lean 4 is a *proof assistant*. You enter your proof into Lean in a formal language and the system checks the correctness of the proof. It displays the current set of hypotheses and goals, and it is capable of performing many simple proofs automatically. This tutorial is, as its name states, a gentle introduction to Lean intended for students and others who have no previous experience with a proof assistant, though a basic knowledge of propositional and first-order logic is assumed.
 
-Complete Lean proofs of six theorems of arithmetic and logic are given. The source code of the proofs (which can be found in directory `Projects`) is heavily commented and additional explanations are given. Proof tactics are introduced one at a time as needed as are tips on syntactical issues. No attempt is made to present Lean constructs in their full generality.
+Constructs of Lean are explained and demonstrated within complete proofs of theorems of arithmetic and logic. The source code is heavily commented and additional explanations are given. As you gain more experience with Lean, the number of comments on a proof is reduced. Proof tactics are introduced one at a time as needed. Tables of keyboard shortcuts, tactics and tips are given in the appendices. The tips include information on definitions and notations used by Lean.
 
-Tables of keyboard shortcuts, tactics and tips are given in the appendices.
+The Lean source code is in directory `Projects`.
 
 ### Formatting notes
 
-Care must be taken when formatting Lean source code which uses a large set of Unicode symbols. The preamble includes
+**Format the tutorial with XeLaTeX.**
+
+The preamble of the XeLaTeX source code includes:
 ```
 \usepackage{fontspec}
 \usepackage{mathpazo}
@@ -30,7 +32,5 @@ Care must be taken when formatting Lean source code which uses a large set of Un
 \fvset{frame=lines,numbers=left,xleftmargin=2em,samepage=true}
 \DefineShortVerb{\!}
 ```
-My favorite font is Palatino whose mathematics version is `mathpazo`. `FreeMono` is the best font I found for rendering verbatim Unicode. `\fancyvrb` enables line numbers and frames around the code.
+`mathpazo` is the Palatino font. `FreeMono` is used to render verbatim Unicode. `\fancyvrb` enables line numbers and frames around the code.
 
-**Important** Format the tutorial with XeLaTeX ! 
-"# gentle-lean" 

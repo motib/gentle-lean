@@ -11,6 +11,7 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 \hline
 \Verb+∣+   & \Verb+\|+\\
 \Verb+ℕ+   & \Verb+\N+\\
+\Verb+ℚ+  & \Verb+\Q+\\
 \Verb+≤+   & \Verb+\le+, \Verb+\leq+\\
 \Verb+≥+   & \Verb+\ge+, \Verb+\geq+\\
 \Verb+≠+   & \Verb+\ne+, \Verb+\neq+\\
@@ -34,7 +35,7 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 \newpage
 
 
-\section{Tactics}
+\section{Tactics}\label{a.tactics}
 
 \begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
@@ -45,12 +46,16 @@ Tactic & Page & Definition\\
 
 \Verb+by_contra+&\pageref{p.by-contra}&This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.\\\hline
 
+\Verb+calc+&\pageref{p.calc}&A proof that is a sequence of expressions related by equality or inequality together with their proofs.\\\hline
+
 \Verb+contrapose+&\pageref{p.contrapose}&Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
 An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ on the resulting contrapositive.\\\hline
 
 \Verb+constructor+&\pageref{p.constructor}&Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.\\\hline
 
 \Verb+exact+&\pageref{p.exact}&The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.\\\hline
+
+\Verb+gcongr+&\pageref{p.gcongr}&\Verb+gcongr+ will attempt to prove the current goal by finding and substituting hypotheses of the form $\mathit{e_1 \; rel\_op \; e_2}$ into the goal.\\\hline
 
 \Verb+have+&\pageref{p.have}&Introduces a new named hypothesis for use in the proof.\\\hline
 
@@ -62,7 +67,7 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+left, right+ &\pageref{p.left-right}& If the goal is a disjunction, tell Lean which disjunction you want to prove.\\\hline
 
-\Verb+linarith+&\pageref{p.linarith}&The tactic solves linear equalities and inequalities. Unlike \Verb+ring+ it can use hypotheses and unlike \Verb+norm_num+ it can solve equations with variables.\\\hline
+\Verb+linarith+&\pageref{p.linarith}&Solves linear equalities and inequalities.\\\hline
 
 \Verb+norm_num+&\pageref{p.norm-num}&Proves numerical equalities and inequalities that do not use variables.\\\hline
 
@@ -73,12 +78,13 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+rcases+&\pageref{p.rcases-with}&\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.\\\hline
 
-\Verb+rfl+&\pageref{p.rfl}&\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.\\\hline
-
+\Verb+rel+&\pageref{p.rel}&Given a hypothesis \Verb+h+ which is a relation $\mathit{e_1 \; rel\_op \; e_2}$, \Verb+rel [h]+ will attempt to prove the current goal by substituting \Verb+h+ into the goal.\\\hline
 \end{tabular}
 
 \begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
+
+\Verb+rfl+&\pageref{p.rfl}&\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.\\\hline
 
 \Verb+ring+&\pageref{p.ring}&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
 
@@ -94,9 +100,36 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+symm+&\pageref{p.symm}&Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.\\\hline
 
+\Verb+twoStep-+ \Verb+Induction+&\pageref{p.two-step}&A tactic for proving by induction when there are two base cases and two inductive hypotheses.\\\hline
+
 \Verb+use+&\pageref{p.use}&Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.\\\hline
 
 \end{tabular}
+
+\paragraph{Comparison of numerical tactics} The follow table and examples clarify the differences between the various tactics for proving numerical equalities and inequalities.
+\begin{center}
+\begin{tabular}{l|c|c|c}
+\hline
+Tactic & Inequalities & Use hypotheses & Use variables\\\hline
+\Verb+linarith+ &yes& yes & yes\\
+\Verb+norm_num+ & yes &yes & no\\
+\Verb+ring+ & no & no & no \\
+\end{tabular}
+\end{center}
+
+\begin{Verbatim}[numbers=none]
+example : 1 + 3 = 4 := by ring
+example : 1 + 3 = 4 := by linarith
+example : 1 + 3 = 4 := by norm_num
+
+example : 1 + 3 < 5 := by ring      -- Error
+example : 1 + 3 < 5 := by linarith
+example : 1 + 3 < 5 := by norm_num
+
+example (h : k = 3): 1 + k = 4 := by ring      -- Error
+example (h : k = 3): 1 + k = 4 := by linarith
+example (h : k = 3): 1 + k = 4 := by norm_num  -- Error
+\end{Verbatim}
 
 \newpage
 
@@ -116,13 +149,17 @@ Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ 
 
 Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
 
-\Verb+Finset+&\pageref{p.finset}&Given a finite set of numbers \Verb+s+ and a function \Verb+f+ over these numbers, \Verb+Finset+ defines the expressions \Verb+∑ x in s f x+ and \Verb+∏ x in s f x+.\\\hline
+\Verb+example+&\pageref{p.example}&\Verb+example+ can be used to state an unnamed theorem.\\\hline
+
+\Verb+Finset+, \Verb+BigOperators+&\pageref{p.finset}&Given a finite set of numbers \Verb+s+ and a function \Verb+f+ over these numbers, \Verb+Finset+ defines the expressions \Verb+∑ x in s f x+ and \Verb+∏ x in s f x+, where \Verb+BigOperators+ enables the use of  \Verb+∑+ and \Verb+∏+.\\\hline
 
 Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
 
-Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at the Infoview.\\\hline
+Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at Infoview.\\\hline
 
 Implicit&\pageref{p.implicit}&Parameters declared with braces, such as \Verb+{a b c : Int}+ state that \Verb+a b c+ are \emph{implicit} bound variables in the theorem whose actual names and types can be inferred when the theorem is used.\\\hline
+
+Multiple tactics& \pageref{p.multiple}&A sequence of tactics can be written on one line with semicolons between them.\\\hline
 
 Negation&\pageref{p.negation}&A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.\\\hline
 
@@ -132,7 +169,7 @@ Right-to-left&\pageref{p.right-to-left}&The symbol \Verb+<|+ means to compute th
 
 Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be displayed.\\\hline
 
-Theorem&\pageref{p.theorem}&You can display the statement of a theorem by hovering over its name.\\\hline
+Theorem&\pageref{p.theorem}&If you hover over a theorem the stattement of the theorem will be displayed.\\\hline
 
 \end{tabular}
 
