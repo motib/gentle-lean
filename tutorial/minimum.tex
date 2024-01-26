@@ -6,21 +6,17 @@
 To prove that the minimum operator is commutative, a hypothesis named !h! is introduced. Of course we have to prove the hypothesis before we can use it.
 
 \begin{Verbatim}
-/-
-  Commutativity of minimun
--/
 theorem min_comm (a b : ℕ) :
     min a b = min b a := by
-
   have h : ∀ x y : ℕ, min x y ≤ min y x := by
     -- Hypothesis: For all natural numbers x y,
     --   min x y ≤ min y x
 \end{Verbatim}
 \boxed{Tactic: \Verb+have+}{have}{Introduces a new named hypothesis for use in the proof.}
 
-\boxed{Tip: indentation}{indentation}{All statements used to prove a hypothesis must be indented a fixed number of spaces.}
+\boxed{Tip: indentation}{indentation}{All statements used to prove a hypothesis must be uniformly indented.}
 
-The hypothesis is $\forall m, n \in N : (\min (m,n) = \min (n,m))$. For the bound variables $m, n$, free variables must be substituted. The tactic !intro x y! introduces new free variables !x y! for !m n!.
+The hypothesis is $\forall m, n \in N : \min (m,n) = \min (n,m)$. For the bound variables $m, n$, free variables must be substituted. The tactic !intro x y! introduces new free variables !x y! for !m n!.
 \begin{Verbatim}[firstnumber=last]
     intro x y
       -- Introduce arbitrary x y in place of ∀
@@ -28,7 +24,7 @@ The hypothesis is $\forall m, n \in N : (\min (m,n) = \min (n,m))$. For the boun
 
 \boxed{Tactic: \Verb+intro+}{intro}{Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we substitute a variable that is this arbitrary value.
 \smallskip\\
-If the goal is is \Verb+⊢P→Q+, \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.}
+If the goal is is \Verb+P→Q+, \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.}
 
 The first step of the proof of the hypothesis uses the theorem that $c\le a \wedge c \le b \rightarrow c \le \min(a,b)$. The Lean theorem !le_min! is applied to obtain two subgoals whose proofs complete the proof of the hypothsis !h!.
 

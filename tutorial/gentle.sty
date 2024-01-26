@@ -27,14 +27,18 @@
 
 % Layout
 \textwidth=150mm
-\textheight=225mm
+\textheight=215mm
 \topmargin=0pt
-\headheight=11pt
+\headheight=0pt
 \oddsidemargin=1em
 \evensidemargin=0mm
 \headsep=0pt
 \parindent=0pt
 \renewcommand{\baselinestretch}{1.1}
-\setlength{\parskip}{0.3\baselineskip plus 1pt minus 1pt}
+\parskip=0.3\baselineskip plus 1pt minus 1pt
+\topsep=0.3\baselineskip plus 1pt minus 1pt
+
+% Remove extra space around fancyvrb environments
+\let\FV@ListVSpace\relax
 
 %\setcounter{tocdepth}{1}

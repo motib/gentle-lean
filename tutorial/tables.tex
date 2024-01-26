@@ -3,15 +3,16 @@
 
 \section{Keyboard shortcuts}
 
-Lean uses Unicode symbols that are not on keyboards. This table shows keyboard shortcuts that are used in VSC for entering the symbols. Enter a space or tab after a shortcut and the symbol will appear. If you hover over an symbol the shortcut will be displayed.
+Lean uses Unicode symbols that are not on keyboards. The following table shows keyboard shortcuts that are used in VSC for entering the symbols. Enter a space or tab after a shortcut and the symbol will appear. If you hover over a symbol the shortcut will be displayed.
 
 \begin{center}
 \begin{tabular}{c|@{\hspace{2em}}l}
 \multicolumn{1}{l|@{\hspace{2em}}}{Unicode symbol}&Keyboard shortcut\\
 \hline
-\Verb+∣+   & \Verb+\|+\\
 \Verb+ℕ+   & \Verb+\N+\\
+\Verb+ℤ+ & \Verb+\Z+\\
 \Verb+ℚ+  & \Verb+\Q+\\
+\Verb+ℝ+ & \Verb+\R+\\ 
 \Verb+≤+   & \Verb+\le+, \Verb+\leq+\\
 \Verb+≥+   & \Verb+\ge+, \Verb+\geq+\\
 \Verb+≠+   & \Verb+\ne+, \Verb+\neq+\\
@@ -25,10 +26,13 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 \Verb+¬+   & \Verb+\n+, \Verb+\neq+\\
 \Verb+⟨+   & \Verb+\<+\\
 \Verb+⟩+   & \Verb+\>+\\
-\Verb+⊢+   & \Verb+\|-+, \verb+\vdash+ \\
+\Verb+∣+   & \Verb+\|+\\
+\Verb+⊢+   & \Verb+\|-+, \Verb+\vdash+ \\
 \Verb+h₁+ & \Verb+h\1+\\
+\Verb+a⁻¹+ & \Verb+a\^-1+,\Verb+a\inv+\\
 \Verb+∑+ & \Verb+\sum+\\
 \Verb+∏+ & \Verb+\prod+\\
+\Verb+α+ & \Verb+\alpha+\\
 \end{tabular}
 \end{center}
 
@@ -41,7 +45,7 @@ Lean uses Unicode symbols that are not on keyboards. This table shows keyboard s
 \hline
 Tactic & Page & Definition\\
 \hline
-\Verb+apply+&\pageref{p.apply}&If you have a theorem \Verb+P→Q+ and the goal matches \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\\
+\Verb+apply+&\pageref{p.apply}&If you have a theorem \Verb+P→Q+ and the goal matches \Verb+Q+ then \Verb+apply P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\\
 &&If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.\\\hline
 
 \Verb+by_contra+&\pageref{p.by-contra}&This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.\\\hline
@@ -49,7 +53,7 @@ Tactic & Page & Definition\\
 \Verb+calc+&\pageref{p.calc}&A proof that is a sequence of expressions related by equality or inequality together with their proofs.\\\hline
 
 \Verb+contrapose+&\pageref{p.contrapose}&Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
-An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ on the resulting contrapositive.\\\hline
+An exclamation point following \Verb+contrapose+ calls tactic \Verb+push_neg+ on the resulting contrapositive.\\\hline
 
 \Verb+constructor+&\pageref{p.constructor}&Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.\\\hline
 
@@ -59,10 +63,10 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+have+&\pageref{p.have}&Introduces a new named hypothesis for use in the proof.\\\hline
 
-\Verb+induction'+&\pageref{p.induction}&To prove a goal with \Verb+n+ by induction, specify the induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.\\\hline
+\Verb+induction'+&\pageref{p.induction}&To prove a goal with \Verb+n+ by induction, specify an induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.\\\hline
 
 \Verb+intro+&\pageref{p.intro}&Introduces free variables in place of bound variables in a universally quantified formula. A universally bound variable means that the formula has to hold for an arbitrary value so we simply substitute a variable that is this arbitrary value.\\
-&&If the goal is \Verb+⊢P→Q+ then \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.\\
+&&If the goal is \Verb+P→Q+ then \Verb+intro+ introduces \Verb+P+ as a hypothesis. If \Verb+Q+ is proven then the hypothesis can be \emph{discharged} and \Verb+P→Q+ is proven.\\
 &&For an existential goal \Verb+∃ a A(a)+, \Verb+intro c+ introduces \Verb+A(c)+ as the new goal.\\\hline
 
 \Verb+left, right+ &\pageref{p.left-right}& If the goal is a disjunction, tell Lean which disjunction you want to prove.\\\hline
@@ -78,15 +82,16 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+rcases+&\pageref{p.rcases-with}&\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.\\\hline
 
-\Verb+rel+&\pageref{p.rel}&Given a hypothesis \Verb+h+ which is a relation $\mathit{e_1 \; rel\_op \; e_2}$, \Verb+rel [h]+ will attempt to prove the current goal by substituting \Verb+h+ into the goal.\\\hline
 \end{tabular}
 
 \begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
 \hline
 
+\Verb+rel+&\pageref{p.rel}&Given a hypothesis \Verb+h+ which is a relation $\mathit{e_1 \; rel\_op \; e_2}$, \Verb+rel [h]+ will attempt to prove the current goal by substituting \Verb+h+ into the goal.\\\hline
+
 \Verb+rfl+&\pageref{p.rfl}&\Verb+rfl+ solves a goal that is an equality if they are \emph{definitionally equivalent}, that is, they define the same entity.\\\hline
 
-\Verb+ring+&\pageref{p.ring}&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, addition, subtraction, multiplication and powers by natural numbers, but not division, can be used.\\\hline
+\Verb+ring+&\pageref{p.ring}&Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account.\\\hline
 
 \Verb+rintro+&\pageref{p.rintro}&Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.\\\hline
 
@@ -98,9 +103,9 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ o
 
 \Verb+sorry+&\pageref{p.sorry}&Proves any theorem.\\\hline
 
-\Verb+symm+&\pageref{p.symm}&Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.\\\hline
+\Verb+symm+&\pageref{p.symm}&Replace an equality \Verb+t = u+ by \Verb+u = t+.\\\hline
 
-\Verb+twoStep-+ \Verb+Induction+&\pageref{p.two-step}&A tactic for proving by induction when there are two base cases and two inductive hypotheses.\\\hline
+\Verb+twoStep-+ \Verb+Induction+&\pageref{p.two-step}&Proof by induction when there are two base cases and two inductive hypotheses.\\\hline
 
 \Verb+use+&\pageref{p.use}&Given an existential goal \Verb+∃ c A(c)+, this tactic introduces a free variable for the bound variable \Verb+c+ to form a new goal. It will also attempt to prove the goal using the hypotheses.\\\hline
 
@@ -116,6 +121,8 @@ Tactic & Inequalities & Use hypotheses & Use variables\\\hline
 \Verb+ring+ & no & no & no \\
 \end{tabular}
 \end{center}
+
+\bigskip
 
 \begin{Verbatim}[numbers=none]
 example : 1 + 3 = 4 := by ring
@@ -147,13 +154,13 @@ Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ 
 
 \Verb+done+&\pageref{p.done}&All proofs should be terminated by \Verb+done+. This is not necessary but if your proof is not complete, \Verb+done+ will display a message.\\\hline
 
-Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.\\\hline
+Don't care&\pageref{p.dont-care}&When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+_+ instead.\\\hline
 
 \Verb+example+&\pageref{p.example}&\Verb+example+ can be used to state an unnamed theorem.\\\hline
 
 \Verb+Finset+, \Verb+BigOperators+&\pageref{p.finset}&Given a finite set of numbers \Verb+s+ and a function \Verb+f+ over these numbers, \Verb+Finset+ defines the expressions \Verb+∑ x in s f x+ and \Verb+∏ x in s f x+, where \Verb+BigOperators+ enables the use of  \Verb+∑+ and \Verb+∏+.\\\hline
 
-Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be indented a fixed number of spaces.\\\hline
+Indentation&\pageref{p.indentation}&All statements used to prove a hypothesis must be uniformly indented.\\\hline
 
 Infoview&\pageref{p.infoview}&Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. I have found it helpful to place the cursor just before the source line, and then to alternate between \Verb+Home+ and \Verb+End+ while looking at Infoview.\\\hline
 
@@ -171,5 +178,6 @@ Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be d
 
 Theorem&\pageref{p.theorem}&If you hover over a theorem the stattement of the theorem will be displayed.\\\hline
 
+Types&\pageref{p.types}&By convention types are denoted by Greek letters \Verb+α+\\\hline
 \end{tabular}
 

@@ -13,6 +13,7 @@ Here is the preamble for the proof of this theorem.
 \begin{Verbatim}
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Basic
+import Mathlib.Data.Finset.Basic
 import Mathlib.Algebra.BigOperators.Basic
 namespace gentle
 open Nat Finset BigOperators
@@ -26,13 +27,11 @@ The library !Finset! supports finite sets and !BigOperators! enables the use of 
 
 \boxed{Tip: \Verb+range+}{range}{\Verb+range n+ is defined as the set of natural numbers less than \Verb+n+.}
 
-The linear display of expressions in Infoview is hard to follow, so the expressions in the explanations in this section will be written in mathematical notation.
-
-Since !range n! is $1,2,\ldots,n-1$, to get the set of natural numbers $0, 1,2,\ldots,n$ the proof will use !range (n + 1)!. We will use $r(n+1)$ for this sequence of numbers:
+Since !range n! is $0,1,2,\ldots,n-1$, to get the set of natural numbers $0,1,2,\ldots,n$ the proof will use !range (n + 1)!.\footnote{The result of adding the numbers from $k=0$ to $k=n$ is obviously the same as adding from $k=1$ to $k=n$.}  We will use $r(n+1)$ to denote this sequence of numbers:
 \[
 \sum_{i=r(n+1)} i = \frac{n(n+1)}{2}\,.
 \]
-This first step in the proof are to replace the goal with the symmetric goal
+This first step in the proof is to replace the goal with the symmetric goal
 \[
 \frac{n(n+1)}{2} = \sum_{i=r(n+1)} i\,.
 \]
@@ -40,10 +39,9 @@ This first step in the proof are to replace the goal with the symmetric goal
 theorem sum_id (n : ℕ) :
     ∑ i in range (n + 1), i = n * (n + 1) / 2 := by
   symm
-  have : 0 < 2 := by norm_num
 \end{Verbatim}
 
-\boxed{Tactic: \Verb+symm+}{symm}{Replace an equality \Verb+t = u+ by \Verb+u = t+. The tactic works for any symmetric relation.}
+\boxed{Tactic: \Verb+symm+}{symm}{Replace an equality \Verb+t = u+ by \Verb+u = t+.}
 
 The next step is to prove the trivial hypothesis $0<2$. The hypothesis is \emph{anonymous} and is subsequently accessed as !this!.
 \begin{Verbatim}[firstnumber=last]
@@ -67,9 +65,9 @@ The proof continues by induction, where !k! is the variable of induction and !ih
   induction' n with k ih
 \end{Verbatim}
 
-\boxed{Tactic: \Verb+induction'+}{induction}{To prove a goal with \Verb+n+ by induction, specify the induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.}
+\boxed{Tactic: \Verb+induction'+}{induction}{To prove a goal with \Verb+n+ by induction, specify an induction variable \Verb+k+ and a name \Verb+ih+ for the inductive hypothesis.}
 
-The base case for $k=0$ is proved using Lean's simplifier.
+The base case $k=0$ is proved using Lean's simplifier.
 \[
 0(0+1) = 2*\sum_{i=0(0+1)} i = 2\cdot 0(0+1)
 \]
@@ -104,7 +102,7 @@ Substitute the inductive hypothesis.
 \begin{Verbatim}[firstnumber=last]
     rw [← ih]
 \end{Verbatim}
-Lean is using the successor function which is now changed to $+1$ and the proof concludes with a simple calculation that can be performed by the tactic !ring!.
+Lean uses the successor function which is now changed to $+1$ and the proof concludes with a simple calculation that can be performed by the tactic !ring!.
 \begin{Verbatim}[firstnumber=last]
     rw [succ_eq_add_one]
       -- succ_eq_add_one : succ n = n + 1
@@ -113,8 +111,6 @@ Lean is using the successor function which is now changed to $+1$ and the proof 
 \end{Verbatim}
 
 \subsection{Inductive definition of addition}
-
-This subsection demonstrates inductive definitions and the tactic !rfl! (\emph{reflexive}).
 
 Here is an inductive definition of natural numbers.\footnote{The program is enclosed in the namespace \Verb+gentle+ to avoid clashing with predefined \Verb+Nat+. After defining \Verb+Nat+ we open its namespace so that we can use \Verb+zero+ and \Verb+succ+ without the prefix \Verb+Nat+.}
 \begin{Verbatim}
@@ -131,7 +127,8 @@ def add : Nat → Nat → Nat
 \end{Verbatim}
 Although we normally think of addition as a function of two variables $\textit{add}(a,b)$, there are advantages to defining it as a function that takes one variable $\textit{add}(a)$ resulting in another function $\textit{add}_{a}(b)$ that gives the sum of $a$ and $b$.\footnote{This is called \emph{currying} but an explanation is outside the scope of this tutorial.}
 
-The first theorem we proof is $0+n=n$ for all natural numbers $n$. The proof is by induction and the base case $0+0=0$ follows by !rfl! from the base case of the definition of !add!.
+\paragraph{A proof that $0+n=n$.}
+The proof is by induction and the base case $0+0=0$ follows from the base case of the definition of !add!.
 \begin{Verbatim}[firstnumber=last]
 theorem zero_add (n : Nat) :
     add zero n = n := by
@@ -143,7 +140,7 @@ theorem zero_add (n : Nat) :
 
 Consider the goal:\\
 \indnt{}!((m + k) + 1) + 1 = (m + (k + 1)) + 1!\\
-\emph{By definition} of !add!, !(a + (b + 1)! is !(a + b) + 1! so the right-hand side of the equation !(m + (k + 1)) + 1! means !((m + k) + 1) + 1 ! which is the left-hand side. Therefore, the tactic !rfl! solves it. You should similarly check the other uses of !rfl! below.
+\emph{By definition} of !add!, !(a + (b + 1)! is !(a + b) + 1! so the right-hand side of the equation !(m + (k + 1)) + 1! means !((m + k) + 1) + 1 ! which is the left-hand side. Therefore, the tactic !rfl! solves it.
 
 The inductive step is to prove $0+(k+1)=(0+k)+1$. Using definition of !add! to rewrite the left-hand side, we get $(0+k)+1=k+1$ which can be solved using the inductive hypothesis that $0+k=k$.
 \begin{Verbatim}[firstnumber=last]
@@ -152,7 +149,8 @@ The inductive step is to prove $0+(k+1)=(0+k)+1$. Using definition of !add! to r
   done
 \end{Verbatim}
 
-Next we prove $(m+1)+n = (m+n)+1$ by induction. The base case $(m+1)+0=m+1$ is immediate from the base case of the definition of !add!.
+\paragraph{A proof that $(m+1)+n = (m+n)+1$.}
+The base case $(m+1)+0=m+1$ is immediate from the base case of the definition of !add!.
 \begin{Verbatim}[firstnumber=last]
 theorem succ_add (m n : Nat) :
     add (succ m) n = succ (add m n) := by
@@ -164,7 +162,7 @@ The inductive step is to prove $(m+1) + (k+1) = (m + (k+1)) + 1$. From the defin
 \begin{Verbatim}[firstnumber=last]
   · rw [add]
 \end{Verbatim}
-Substituting the inductive hypothesis $(m+1) + k = (m+k) + 1$ results in $((m+k) + 1) + 1 = (m + (k+1)) + 1$, which, as noted above, is definitionally equivalent and can be solved by !rfl!.
+Substituting the inductive hypothesis $(m+1) + k = (m+k) + 1$ results in $((m+k) + 1) + 1 = (m + (k+1)) + 1$ which, as noted above can be solved by !rfl!.
 \begin{Verbatim}[firstnumber=last]
     rw [ih]
     rfl
@@ -173,7 +171,7 @@ Substituting the inductive hypothesis $(m+1) + k = (m+k) + 1$ results in $((m+k)
 
 \subsection{Multiple steps in a proof}
 
-In this section we explain two ways to shorten proofs in Lean by performing more than one step in the same action. We start with the proof of $(m|n \vee m|k) \rightarrow m | mk$ using methods already encountered. Since the hypothesis is a disjunction, the goal must be proved separately for each disjunct using !rcases! to create separate hypotheses. Furthermore, since $m|n$ is defined as $\exists a (n=ma)$, new variables must be introduced (see page~\pageref{p.rcases}).
+In this section we explain two ways to shorten proofs in Lean by performing more than one step in the same action. We start with the proof of $(m|n \vee m|k) \rightarrow m | mk$. Since the hypothesis is a disjunction, the goal must be proved separately for each disjunct using !rcases! to create separate hypotheses. Furthermore, since $m|n$ is defined as $\exists a (n=ma)$, new variables must be introduced (page~\pageref{p.rcases}).
 \begin{Verbatim}
 theorem div_prod1 {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) :
     m ∣ n * k := by
@@ -192,7 +190,7 @@ The new hypotheses are !h1 : n = m * a! and !h2 : k = m * b! which can be used t
   done
 \end{Verbatim}
 
-Proofs can be shortened by sequentially rewrites of the goal in one line.\\
+The proofs can be shortened by combining multiple rewrites into one !rw!.\\
 \indnt{}!· rw [h1, mul_assoc]!\\
 \indnt{}!· rw [h2, mul_comm, mul_assoc]!
 
@@ -221,7 +219,7 @@ The base cases are $\textrm{fib}(0) = 0 < (7/4)^0$ and $\textrm{fib}(1) = 1 < (7
 \end{eqnarray*}
 The new aspects of the proof are: (a) two base cases and two inductive hypotheses, (b) an inductive hypothesis that is an inequality rather than an equality, and (c) calculations performed after using the inductive hypothesis.
 
-We start with an inductive definition of the Fibonacci numbers. Normally, this is a function from natural numbers to natural numbers, but here the function is to rational numbers to enable comparison with the rational number $7/4$.
+We start with an inductive definition of the Fibonacci numbers. Normally, this is a function from natural numbers to natural numbers, but here the function is to rational numbers to enable comparison with $7/4$.
 \begin{Verbatim}
 def fib : ℕ → ℚ
   | 0 => 0
@@ -237,7 +235,7 @@ The tactic !twoStepInduction! creates three subgoals, two for the base cases and
   induction' n using Nat.twoStepInduction with k ih1 ih2
 \end{Verbatim}
 
-\boxed{Tactic \Verb+twoStepInduction+}{two-step}{A tactic for proving by induction when there are two base cases and two inductive hypotheses.}
+\boxed{Tactic \Verb+twoStepInduction+}{two-step}{Proof by induction when there are two base cases and two inductive hypotheses.}
 
 First the two base cases are proved.
 \begin{Verbatim}[firstnumber=last]
@@ -253,26 +251,25 @@ Next we prove two hypotheses that will be used in the proof.
     have h2 : 1+(7/4:ℚ) < (7/4)^2 := by norm_num
 \end{Verbatim}
 
-Look again at the mathematical proof above, which involves substitution of the inductive hypotheses that are inequalities and calculation with rational numbers. For this, !calc! is convenient. The form of the calculation we need is
+Look again at the mathematical proof above, which involves substitution of the inductive hypotheses that are inequalities and calculation with rational numbers:
 \[
 e_1 = e_2 < e_3 = e_4 < e_5 = e_6\,.
 \]
 Of course each step in the calculation must be justified.
 
-The syntax of !calc! is as follows where uniform indentation must be observed.\\
+\newpage
+
+This calculation can be performing using !calc!, where uniform indentation must be observed.\\
 \indnt{}!calc e1 = e2 := by ...!\\
-\indnt{}\indnt{}!_ < e3 := by ...!\\
-\indnt{}\indnt{}!_ = e4 := by ...!\\
-\indnt{}\indnt{}!_ < e5 := by ...!\\
-\indnt{}\indnt{}!_ = e6 := by ...!
+\indnt{}\indnt{}!_ < e3  := by ...!\\
+\indnt{}\indnt{}!_ = e4  := by ...!\\
+\indnt{}\indnt{}!_ < e5  := by ...!\\
+\indnt{}\indnt{}!_ = e6  := by ...!
 
 The definition of !fib! is used to expand !fib(k+2)! and the inductive hypotheses are used. Since the hypotheses are inequalities, we cannot use the !rw! tactic; instead, the !rel! tactic is used which substitutes inequalities.
 \begin{Verbatim}[firstnumber=last]
     calc fib (k + 2) = fib (k + 1) + fib k := by rw [fib]
        _ < (7/4)^(k+1) + (7/4)^k := by rel [ih1, ih2]
-\end{Verbatim}
-The steps doing calculation are now straightforward.
-\begin{Verbatim}[firstnumber=last]
        _ = (7/4)^k * (1+(7/4)) := by ring
        _ < (7/4)^k * (7/4)^2 := by
            apply (mul_lt_mul_left  h1).mpr h2
@@ -285,7 +282,7 @@ The steps doing calculation are now straightforward.
 
 \boxed{Tactic \Verb+rel+}{rel}{Given a hypothesis \Verb+h+ which is a relation $\mathit{e_1 \; rel\_op \; e_2}$, \Verb+rel [h]+ will attempt to prove the current goal by substituting \Verb+h+ into the goal.}
 
-A shorter proof uses the tactic !gcongr! which is similar to !rel! except that the hypotheses need not be specified because the tactic will find it, if possible.
+A shorter proof uses the tactic !gcongr! which is similar to !rel! except that the hypotheses need not be specified because the tactic will find them if possible.
 \begin{Verbatim}
 theorem seven_fourths_gcongr (n : ℕ) : fib n < (7 / 4 : ℚ) ^ n := by
   induction' n using Nat.twoStepInduction with k ih1 ih2
@@ -298,6 +295,9 @@ theorem seven_fourths_gcongr (n : ℕ) : fib n < (7 / 4 : ℚ) ^ n := by
        _ = (7/4)^(k+2) := by ring
   done
 \end{Verbatim}
+
+\newpage
+
 Given\\
 \indnt{}!fib (k + 2) = fib (k + 1) + fib k!\\
 the tactic !gcongr! will find the (inductive) hypotheses by itself so we have a proof of that\\

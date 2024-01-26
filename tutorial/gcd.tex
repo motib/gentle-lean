@@ -1,7 +1,7 @@
 % !TeX root = gentle.tex
 % !TeX Program=XeLaTeX
 
-\section{Commutativity of the greatest common denominator}
+\section{Commutativity of gcd}
 
 
 A theorem is declared like a function in a programming language with the name of the theorem, its parameters and the statement of the theorem.The keyword !by! introduces a \emph{tactic proof}, which we will be using exclusively in this tutorial.
@@ -9,15 +9,13 @@ A theorem is declared like a function in a programming language with the name of
 \boxed{Tip \Verb+example+}{example}{\Verb+example+ is used to state an unnamed theorem.}
 It is common in writing about Lean to demonstrate constructs using unnamed  theorems, but \Verb+example+ is not used in this tutorial except briefly in  Appendix~\ref{a.tactics}.
 
+The first theorem we prove is the commutativity of the greatest common denominator.
 \begin{Verbatim}
-/-
-  Commutativity of gcd
--/
 theorem gcd_comm (m n : ℕ) :
     Nat.gcd m n = Nat.gcd n m := by
 \end{Verbatim}
 
-The parameters !m n! which are declared as natural numbers have a logical meaning as universally quantified variables.
+The parameters !m n! have a logical meaning as universally quantified variables.
 \[
 \forall m, n \in N : (\gcd (m,n) = \gcd (n,m))\,.
 \]
@@ -31,13 +29,11 @@ The proof of the theorem uses the fact that the division operator is antisymmetr
 
 When you place the cursor before line~6, Lean Inforview will display the \emph{tactic state}:
 \begin{Verbatim}[numbers=none]
-1 goal
 m n : ℕ
 ⊢ Nat.gcd m n = Nat.gcd n m
 \end{Verbatim}
-This gives the \emph{context} that !m n! are natural numbers and the current \emph{goal} following the turnstile symbol !⊢!. After the theorem !Nat.dvd_antisymm! is applied, the tactic state changes to
+This gives the \emph{context} that !m n! are natural numbers and the current \emph{goal} following the turnstile symbol !⊢!. After the theorem !Nat.dvd_antisymm! is applied, there are two goals.
 \begin{Verbatim}[numbers=none]
-2 goals
 case a
 m n : ℕ
 ⊢ Nat.gcd m n ∣ Nat.gcd n m
@@ -45,9 +41,8 @@ case a
 m n : ℕ
 ⊢ Nat.gcd n m ∣ Nat.gcd m n
 \end{Verbatim}
-By the anti-symmetry of division, you can prove an equality by proving that the two sides divide each other, thus creating two goals.
 
-\boxed{Tactic: \Verb+apply+}{apply}{If you have a theorem \Verb+P→Q+ and the goal matches\footnote{Technically, if the goal \emph{unifies} with \Verb+Q+, but we don't explain the concept here.} \Verb+Q+ then \Verb+apply ⊢P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\smallskip\\
+\boxed{Tactic: \Verb+apply+}{apply}{If you have a theorem \Verb+P→Q+ and the goal matches \Verb+Q+ then \Verb+apply P→Q+ removes the goal \Verb+Q+ and adds \Verb+P+ as the new goal.\smallskip\\
 If you have a theorem \Verb+Q+ and the goal matches \Verb+Q+ then \Verb+apply Q+ removes the goal and there are no more goals.}
 
 $\gcd (m,n)$ will divide $\gcd (n,m)$ only if it divides both $n$ and $m$, so we again have two new subgoals. Then, by definition, $\gcd (m,n)$ is a common divisor so it divides both the left parameter $m$ and the right parameter $n$. 

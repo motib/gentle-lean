@@ -1,15 +1,15 @@
 % !TeX root = gentle.tex
 % !TeX Program=XeLaTeX
 
-\section{There exists an infinite number of prime numbers}
+\section{An infinite number of prime numbers}
 
-Assume to the contrary that there are finitely many prime numbers $p_1,p_2,\ldots,p_n$. Consider $q=(p_1p_2\cdots p_n)+1$. For any $1<m<q$, $m$ does not divide $q$ because the remainder is $1$. Therefore, $q$ is a prime since it is divisible only by $1$ and $q$.
+To prove that there are an infinite number of prime numbers, assume to the contrary that there are finitely many prime numbers $p_1,p_2,\ldots,p_n$. Consider $q=(p_1p_2\cdots p_n)+1$. For any $1<m<q$, $m$ does not divide $q$ because the remainder is $1$. Therefore, $q$ is a prime since it is divisible only by $1$ and $q$.
 
 There are two ways to define primes in Lean:
 \begin{itemize}
 \item !Nat.prime_def_lt!: $p$ is prime if and only if $(2\leq p) \wedge \forall m < p (m|p \rightarrow m=1)$.
 
-\item !Nat.Prime.eq_one_or_self_of_dvd!: $p$ is prime only if $m|p \rightarrow (m=1 \vee m=p)$.\footnote{This definition is \emph{not} if and only if because $p=1$ satisfies the right-hand side but $1$ is not a prime.}
+\item !Nat.Prime.eq_one_or_self_of_dvd!: $p$ is prime only if $m|p \rightarrow (m=1 \vee m=p)$.\footnote{This definition is \emph{not} ``if and only if,'' because $p=1$ satisfies the right-hand side but $1$ is not a prime.}
 
 \end{itemize}
 The proof above follows the definition !Nat.prime_def_lt!, but the proof using\\
@@ -55,7 +55,7 @@ Let us look at
 \UndefineShortVerb{\!}$0<n!$ from \Verb+factorial_pos _+ and proves that $0+1<n!+1$\DefineShortVerb{\!}.
 
 \item !Nat.ne_of_gt! is the simple theorem that if
-\UndefineShortVerb{\!}$1<n+1!$ then $1\neq n+1!$ \DefineShortVerb{\!}, which is the hypothesis !f1! that we want to prove.
+\UndefineShortVerb{\!}$1<n!+1$ then $1\neq n!+1$ \DefineShortVerb{\!}, which is the hypothesis !f1! that we want to prove.
 \end{itemize}
 
 \boxed{Tip: right-to-left}{right-to-left}{The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.}
@@ -84,7 +84,7 @@ To prove $n\leq p$, we will prove the equivalent formula $\neg (n \geq p)$ which
       -- Assume n ≥ p and make False the new goal
       --   to prove np by contradiction
 \end{Verbatim}
-\boxed{Tip: negation}{negation}{A negation \Verb+¬p+ is \emph{defined} as \Verb+p → False+. The tactic \Verb+intro+ makes \Verb+p+ into a hypothesis and \Verb+False+ into the goal. When there are no more goals, \Verb+¬p+ has been proved (by contradiction).}
+\boxed{Tip: negation}{negation}{A negation \Verb+¬p+ is defined as \Verb+p → False+ so it is proved by introducing \Verb+p+ as a hypothesis and then showing that this results in a contradiction by proving \Verb+False+.}
 
 On page~\pageref{p.intro} we noted that the tactic !intro! is applicable to goals or hypotheses of the form \Verb+P → Q+, as is done here with \Verb+p → False+.
 
@@ -108,7 +108,7 @@ To prove the second hypothesis we use the theorem !Nat.dvd_add_iff_right! whose 
 \item Modus ponens (!mp!): $a \rightarrow b$, assume $a$ and prove $b$.
 \item Modus ponens reversed (!mpr!): $a \leftarrow b$, assume $b$ and prove $a$.
 \end{itemize}
-Here the reversed modus ponens is used.
+Here reversed modus ponens is used.
 \begin{Verbatim}[firstnumber=last]
     have h₂ : p ∣ 1 := by
       apply (Nat.dvd_add_iff_right h₁).mpr (minFac_dvd _)
@@ -135,7 +135,7 @@ Applications of the hypotheses !pp! and !h₂! complete the proof of !np!.
     -- The proof of np : np: n ≤ p is (finally) complete
 \end{Verbatim}
 
-The current goal is now $\exists p( n \leq p \wedge \mathit{prime}(p))$. The existentially quantified variable $p$ must be replace with a specific value which is also $p$ using the tactic !use!.  This leaves the conjunction $n \leq p \wedge \mathit{prime}(p)$, which is split into two subgoals that are proved using the hypotheses !np! and !pp!.
+The current goal is \Verb+∃ p, n ≤ p ∧ Nat.Prime p+. The existentially quantified variable !p! must be replaced with a specific value, here also !p!, by the tactic !use!.  We can split the conjunction !n ≤ p ∧ Nat.Prime p! into two subgoals that are proved using the hypotheses !np! and !pp!.
 
 \begin{Verbatim}[firstnumber=last]
   use p

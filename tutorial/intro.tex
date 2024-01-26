@@ -5,7 +5,7 @@
 
 Lean 4 is a \emph{proof assistant}. You enter your proof into Lean in a formal language and the system checks the correctness of the proof. It displays the current set of hypotheses and goals, and it is capable of performing many simple proofs automatically. This tutorial is, as its name states, a gentle introduction to Lean intended for students and others who have no previous experience with a proof assistant, though a basic knowledge of propositional and first-order logic is assumed.
 
-Constructs of Lean are explained and demonstrated within complete proofs of theorems of arithmetic and logic. The source code is heavily commented and additional explanations are given. As you gain more experience with Lean, the number of comments on a proof is reduced. Proof tactics are introduced one at a time as needed.\footnote{Only standard tactics are used.} Tables of keyboard shortcuts, tactics and tips are given in the appendices. The tips include information on definitions and notations used by Lean.
+Constructs of Lean are explained and demonstrated within complete proofs of theorems of arithmetic and logic. The source code is heavily commented and additional explanations are given. As you gain more experience with Lean, fewer comments are given. Proof tactics are introduced one at a time as needed and only standard tactics are used. Tables of keyboard shortcuts, tactics and tips are given in the appendices.
 
 The Lean source code of the proofs and the \XeLaTeX{} source of this document can be found at
 
@@ -36,22 +36,6 @@ and I will do so in this tutorial. You may ignore this convention in your proofs
 
 There is also a convention for naming theorems: the name is written in lower case with underscores between the parts of the name. The name specifies the meaning of the theorem in a few words or abbreviations, for example, !min_le_right! is !min a b ≤ b! and !min_le_left! is !min a b ≤ a!.
 
-\subsection*{Preamble}
-
-The Lean community has developed a large mathematical library called !Mathlib!. You will work with the definitions and theorems defined there, which are imported in the first lines in your Lean source file. All programs must the import the library of proof tactics\\
-\indnt{}!import Mathlib.Tactic!
-
-Other libraries contain the definitions and theorems of data types, for example,\\
-\indnt{}!import Mathlib.Data.Nat.Prime!
-
-The examples in this tutorial are enclosed in\\
-\indnt{}!namespace gentle!\\
-to ensure that their names do not clash with the names of theorems in !MathLib!. In addition,\\
-\indnt{}!open Nat!\\
-will often be used to open the namespace of !Nat! so that we can write !factorial! instead of !Nat.factorial!.
-
-Preambles do not appear in the examples here but can be found in the Lean source files.
-
 \subsection*{Tips for working with Lean}
 
 \boxed{Tip: Infoview}{infoview}{Enter \Verb+ctrl-shift-enter+ to open the Lean Infoview where hypotheses, goals and errors are displayed. To understand the effect of applying a tactic, place the cursor just before the source line and then alternate \Verb+Home+ and \Verb+End+ while looking at Infoview.}
@@ -60,8 +44,28 @@ Preambles do not appear in the examples here but can be found in the Lean source
 
 \boxed{Tip: theorem}{theorem}{If you hover over a theorem the stattement of the theorem will be displayed.}
 
-Theorems are defined to be widely applicable, so initially you will not be able to understand the full statement of a theorem in !Mathlib!. In this tutorial only natural numbers and integers are used, so you can interpret the theorems narrowly, for example,\\
+Theorems are defined to be widely applicable, so initially you will not be able to understand the full statement of a theorem in the library. In this tutorial only natural numbers and integers are used, so you can interpret the theorems narrowly, for example,\\
 \indnt{}!dvd_mul_right (a b : Nat) : a ∣ a * b!
+
+\subsection*{Preamble}
+
+The Lean community has developed a mathematical library called !Mathlib!. You will work with the definitions and theorems defined there, which are imported in the first lines of your Lean source file. Preambles do not appear in the examples here but can be found in the source files.
+
+\begin{enumerate}
+\item The library of proof tactics:\\
+\indnt{}!import Mathlib.Tactic!
+
+\item Other libraries contain the definitions and theorems of data types:\\
+\indnt{}!import Mathlib.Data.Nat.Prime!
+
+\item !namespace! ensures that the names you give do not clash with the names of theorems in !Mathlib!. The examples in this tutorial use the same names as those in \Verb+Mathlib+ so be sure to retain the !namespace!.\\ \indnt{}!namespace gentle!\\
+Alternatively, you can modify the names of the theorems, for example, replace !gcd_comm! by !my_gcd_comm!.\\
+
+\item You can open a namespace so that you do not have to write a full name:  !factorial! instead of !Nat.factorial!:\\
+\indnt{}!open Nat!
+\end{enumerate}
+
+\newpage
 
 \subsection*{References}
 \textbf{Lean resources}
@@ -89,7 +93,7 @@ This is a textbook on methods of proof in mathematics. To simplify learning it u
 \end{itemize}
 \textbf{Mathematical logic}
 \begin{itemize}
-\item M. Ben-Ari. \textit{Mathematical Logic for Computer Science (Third Edition}, Springer, 2012.\\
+\item M. Ben-Ari. \textit{Mathematical Logic for Computer Science (Third Edition)}, Springer, 2012.\\
 An introduction to mathematical logic including both syntactical and semantic proof methods, as well as sections on temporal logic and program verification.
 \item M. Huth and M. Ryan. \textit{Logic in Computer Science: Modelling and Reasoning about Systems (Second Edition)}, Cambridge University Press, 2004.\\
 An introduction to mathematical logic with emphasis on natural deduction, temporal logic and model checking.
@@ -97,5 +101,5 @@ An introduction to mathematical logic with emphasis on natural deduction, tempor
 
 \subsection*{Acknowledgment}
 
-I am deeply indebted to the members of the Lean Community for their patience and help as I took my first steps in Lean. Much of the content in this tutorial is based on their writings and suggestions.
+I am deeply indebted to the members of the Lean Community for their patience and help as I took my first steps in Lean.
 

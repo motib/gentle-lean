@@ -5,7 +5,7 @@
 
 \subsection{Conjunction and equivalence}
 
-When a theorem has equivalence (!↔!) as the main operator and it must be split into two subgoals, one for modus ponens (!mp!) direction and one for the modus ponens reversed (!mpr!) direction.
+When a theorem has equivalence (!↔!) as the main operator, it must be split into two subgoals, one for the modus ponens (!mp!) direction and one for the modus ponens reversed (!mpr!) direction.
 
 \begin{Verbatim}
 theorem lt_iff_le_eq {a b : Int} : 
@@ -16,8 +16,6 @@ theorem lt_iff_le_eq {a b : Int} :
     -- Create two subgoals (mp and mpr) from the current iff goal
     -- First subgoal is (a ≤ b ∧ ¬b ≤ a) → (a ≤ b ∧ a ≠ b)
  \end{Verbatim}
-
-\boxed{Tactic: \Verb+constructor+}{constructor}{Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.}
 
 The current goal is an implication whose premise and conclusion are both conjunctions. We can use !intro! to introduce the premise as a hypothesis and then !rcases! (page~\pageref{p.rcases}) to split the conjunctive hypothesis into two subgoals to be proved.\\
 \indnt{}!intro h!\\
@@ -41,8 +39,6 @@ We start with the implication of the modus ponens direction, where !rintro! intr
       rw [h2]
 \end{Verbatim}
 
-\newpage
-
 The proof of the implication of the modus ponens reversed direction is similar.
 \begin{Verbatim}[firstnumber=last]
   · rintro ⟨h0, h1⟩
@@ -54,6 +50,9 @@ The proof of the implication of the modus ponens reversed direction is similar.
         --  le_antisymm: (a ≤ b) → (b ≤ a) → a = b
   done
 \end{Verbatim}
+
+\boxed{Tactic: \Verb+constructor+}{constructor}{Splits a goal into two subgoals: equivalence (\Verb+↔+) into two implications (Modus ponens and Modus ponens reversed) and conjunction (\Verb+∧+) into two conjuncts.}
+
 
 \boxed{Tactic: \Verb+rintro+}{rintro}{Performs \Verb+intro+ and then \Verb+rcases+ to split the resulting hypothesis.}
 
@@ -67,7 +66,7 @@ theorem lt_abs {x y : Int} :
     -- le_or_gt 0 y: a ≤ b ∨ a > b
 \end{Verbatim}
 
-The equivalence goal is unchanged, but we must prove it under both hypotheses: $0\leq y$ and $0>y$. First we prove for $0\leq y$, in which case we can rewrite $|y|$ by $y$.
+The equivalence goal is unchanged, but we must prove it under both hypotheses: $0\leq y$ and $0>y$. First we prove the goal for $0\leq y$, in which case we can rewrite $|y|$ by $y$.
 \begin{Verbatim}[firstnumber=last]
   · rw [abs_of_nonneg h]
     -- abs_of_nonneg: 0 ≤ a → |a| = a
@@ -80,7 +79,7 @@ For the modus ponens direction, the premise is introduced as a hypothesis and th
       left
       exact h'
 \end{Verbatim}
-For the modus ponens reversed direction, the hypothesis is a disjunction and we have to prove the goal for each disjunct. For the second disjunct, we have $0 ≤ y$ and $x < -y$, and Lean can prove that this implies the goal $x < y$ using the tactic !linarith!.
+For the modus ponens reversed direction, the \emph{hypothesis} is a disjunction and we have to prove the goal for each disjunct. For the second disjunct, we have $0 \le y$ and $x < -y$, and Lean can prove that this implies the goal $x < y$ using the tactic !linarith!.
 
 \begin{Verbatim}[firstnumber=last]
     . intro h'
@@ -123,7 +122,21 @@ theorem T1a {A : Prop} : (¬A → A) → A := by
 
 \boxed{Tactic: \Verb+by\_contra+}{by-contra}{This tactic removes a goal \Verb+P+, adds the hypothesis \Verb+¬P+ and creates a new goal \Verb+False+.}
 
-Here is another proof of the same theorem using contraposition instead of contradiction. The result of using the tactic !contrapose! is not what you might expect from the way it is usually used in logic. Given the \emph{hypothesis} $\neg A \rightarrow A$, it does not change the hypothesis into $\neg A \rightarrow \neg\neg A$. Instead, the hypothesis becomes the goal $\neg(\neg A \rightarrow A)$ and the goal $A$ becomes the hypothesis $\neg A$.
+\newpage
+
+Here is another proof of the same theorem using contraposition instead of contradiction.
+\begin{Verbatim}[firstnumber=last]
+theorem T1b {A : Prop} : (¬A → A) → A := by
+  intro h1
+  contrapose! h1
+    -- Replace h1 by its contrapositive and push negation inward
+  constructor
+  · exact h1
+  · exact h1
+  done
+\end{Verbatim}
+
+The result of using the tactic !contrapose! is not what you might expect from the way it is usually used in logic. Given the \emph{hypothesis} $\neg A \rightarrow A$, it does not change the hypothesis into $\neg A \rightarrow \neg\neg A$. Instead, the hypothesis becomes the goal $\neg(\neg A \rightarrow A)$ and the goal $A$ becomes the hypothesis $\neg A$.
 
 This makes sense by the deduction theorem.
 \[
@@ -137,23 +150,12 @@ whose contrapositive is
 \[
 \vdash \neg G \rightarrow \neg (H_1\wedge H_2 \wedge \ldots \wedge H_n)\,,
 \]
-which using deduction is
+which by the deduction theorem is
 \[
 \neg G \vdash \neg (H_1\wedge H_2 \wedge \ldots \wedge H_n)\,.
 \]
 
-Although $\neg(\neg A \rightarrow A)$ doesn't simplify the proof, if we push negation inward (do the calculation yourself\verb+!+) the result is $\neg A \wedge \neg A$ which is trivial to prove. The exclamation point in the tactic means that following the tactic !contrapose!, the tactic !push_neg! is called to push negation inward.
-
-\begin{Verbatim}[firstnumber=last]
-theorem T1b {A : Prop} : (¬A → A) → A := by
-  intro h1
-  contrapose! h1
-    -- Replace h1 by its contrapositive and push negation inward
-  constructor
-  · exact h1
-  · exact h1
-  done
-\end{Verbatim}
+Although $\neg(\neg A \rightarrow A)$ doesn't simplify the proof, if we push negation inward (do the calculation yourself\verb+!+) the result is $\neg A \wedge \neg A$ which is trivial to prove. The exclamation point in the tactic means that following the tactic !contrapose!, the tactic \Verb+push_neg+ is called to push negation inward.
 
 \boxed{Tactic: \Verb+contrapose+}{contrapose}{Transforms a goal into its contrapositive. Applied to a hypothesis, it makes the negation of the goal into a hypothesis and the negation of the hypothesis into the goal. 
 An exclamation point following \Verb+contrapose+ calls tactic \Verb+push\_neg+ on the resulting contrapositive.}
@@ -178,9 +180,9 @@ theorem T2 {A B : Prop} : ((A → B) → A) → A := by
   done
 \end{Verbatim}
 
-\boxed{Tip: Don't care}{dont-care}{When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+(\_)+ instead.}
+\boxed{Tip: Don't care}{dont-care}{When a name or value is syntactically required but you don't care what its value is, you can use the underscore symbol \Verb+\_+ instead.}
 
-The next theorem we want to prove $(A\rightarrow B) \vee (B \rightarrow C)$ has a disjunction operator as its main operator. We prefer to carry out the proof using only the implication operator, so we first try to prove the hypthosis $\neg(A\rightarrow B) \rightarrow (B \rightarrow C)$. When the hypothesis has been proved, we use the \Verb+contrapose!+ to negate the hypothesis and the goal, and then exchange them. Moving the negations inward results in a hypothesis that is exactly the goal.
+The theorem $(A\rightarrow B) \vee (B \rightarrow C)$ has a disjunction operator as its main operator. We prefer to carry out the proof using only the implication operator, so we first try to prove the hypthosis $\neg(A\rightarrow B) \rightarrow (B \rightarrow C)$. When the hypothesis has been proved, we use the \Verb+contrapose!+ to negate the hypothesis and the goal, and then exchange them. Moving the negations inward results in a hypothesis that is exactly the goal.
 \begin{Verbatim}[firstnumber=last]
 theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
   have h1 : ¬(A → B) → (B → C) := by
@@ -190,11 +192,12 @@ theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
     intro
       -- No need to name the new hypothesis
     exact h3
-
   contrapose! h1
   exact h1
   done
 \end{Verbatim}
+
+\newpage
 
 \subsection{Tautologies}
 

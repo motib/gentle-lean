@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Basic
+import Mathlib.Data.Finset.Basic
 import Mathlib.Algebra.BigOperators.Basic
 
 namespace gentle

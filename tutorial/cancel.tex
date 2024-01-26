@@ -1,7 +1,7 @@
 % !TeX root = gentle.tex
 % !TeX Program=XeLaTeX
 
-\section{Cancellation properties}
+\section{Cancellation}
 
 Here we prove theorems of arithmetic related to cancellation properties:
 \[
@@ -37,11 +37,9 @@ theorem neg_add_cancel_left (a b : Int) :
 \Verb+rw [← eqn]+ rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side.\\
 \Verb+rw [eqn] h+ and \Verb+rw [← eqn] h+ rewrite expressions in the hypothesis \Verb+h+.}
 
-The arrow !←! which is defined as ``rewrites the goal by replacing occurrences of the right-hand side of \Verb+eqn+ with the left-hand side'' can seem non-intuitive: when !← add_assoc! is used to rewrite the goal !-a + (a + b) = b! above, we are rewriting the \emph{left-hand side} of the goal. However, the directions are referring to the sides of \Verb+eqn+ (here, !a + b + c = a + (b + c)!) where occurrences of \emph{its} right-hand side are !a + (b + c)! are replaced by \emph{its} left-hand side !a + b + c!.
-
 \boxed{Tactic: \Verb+exact+}{exact}{The tactic \Verb+exact h+ is used when \Verb+h+ is exactly the statement of the current goal, so the goal is now proved. \Verb+exact+ is similar to \Verb+apply+ but limited because it can only be used if the hypothesis exactly matches the goal.}
 
-The parameter !h : a + b = a + c! in the theorem !add_left_cancel! is a hypothesis that is used in the proof. It must be provided when the theorem is applied (see below).
+The parameter !h : a + b = a + c! in the theorem !add_left_cancel! is a hypothesis.
 \begin{Verbatim}[firstnumber=last]
 theorem add_left_cancel {a b c : Int}
     (h : a + b = a + c) : b = c := by

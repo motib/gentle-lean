@@ -1,9 +1,9 @@
 % !TeX root = gentle.tex
 % !TeX Program=XeLaTeX
 
-\section{The square root of two is irrational}
+\section{Square root of two is irrational}
 
-Suppose that $\sqrt{2}$ is rational so that $\sqrt{2}=m/n$. Without loss of generality, assume that $m,n$ are \emph{coprime}, that is, they have no common factor. Then $m^2/n^2=2$ and $m^2=2n^2$, so $2$ must divide $m$. Therefore, $2^2$ must divide $2n^2$ and hence $n$ is also divisible by $2$, contracting the assumption that $m,n$ are coprime. This section contains a Lean proof of the central claim of the proof that if $m,n$ are coprime then $m^2\neq 2n^2$.
+To prove that $\sqrt{2}$ is rational, suppose that it is rational so that $\sqrt{2}=m/n$. Without loss of generality, assume that $m,n$ are \emph{coprime}, that is, they have no common factor. Then $m^2/n^2=2$ and $m^2=2n^2$, so $2$ must divide $m$. Therefore, $2^2$ must divide $2n^2$ and hence $n$ is also divisible by $2$, contracting the assumption that $m,n$ are coprime. This section contains a Lean proof of the central claim of the proof that if $m,n$ are coprime then $m^2\neq 2n^2$.
 
 A !lemma! is just a different name for a !theorem!. This lemma proves that $a^2=a\cdot a$ using !rw! on the successor function and the base case of the definition for taking the power of a number.
 \begin{Verbatim}
@@ -17,7 +17,7 @@ lemma pow_two (a : ℕ) : a ^ 2 = a * a := by
   done
 \end{Verbatim}
 
-The second lemma proves that if $2 | m^2$ then $2 | m$ using the first lemma and the theorem that if there is a prime factor of $a*b$ then it is a prime factor of either $a$ or $b$. When the hypothesis !h! which is now $2| m \cdot m$ is rewritten, since $a=b=m$ the hypothesis becomes the disjunction $2 | m \vee 2 | m$.
+The second lemma proves that if $2 | m^2$ then $2 | m$ using the first lemma and the theorem that if there is a prime factor of $a*b$ then it is a prime factor of either $a$ or $b$. When the hypothesis !h! which is now $2| m \cdot m$ is rewritten, the hypothesis becomes the disjunction $2 | m \vee 2 | m$ since $a=b=m$.
 \begin{Verbatim}[firstnumber=last]
 lemma even_of_even_sqr (m : ℕ)
      (h : 2 ∣ m ^ 2) : 2 ∣ m := by
@@ -42,6 +42,9 @@ Split the disjunctive hypothesis $2 | m \vee 2 | m$ into two identical hypothese
     --   2 | m ∨ 2 ∣ m  into
     --   two (identical) subformulas 2 ∣ m, 2 ∣ m
 \end{Verbatim}
+
+\newpage
+
 Prove both the (identical) subformulas.
 \begin{Verbatim}[firstnumber=last]
   · exact h₁
@@ -54,7 +57,7 @@ Prove both the (identical) subformulas.
 \boxed{Tactic: \Verb+rcases+}{rcases}{Given a hypothesis or goal that is a disjunction \Verb+A∨B+ the tactic \Verb+rcases+ splits it into two sub-hypotheses or subgoals \Verb+A+ and \Verb+B+.\smallskip\\
 For a disjunctive hypothesis, prove the goal under both sub-hypotheses. For a disjunctive goal, prove one of the subgoals.}
 
-To prove the theorem, we assume $m^2=2n^2$ and try to prove a contradiction.
+To prove the theorem, we assume $m^2=2n^2$ and prove a contradiction.
 \begin{Verbatim}[firstnumber=last]
 theorem sqr_not_even (m n : ℕ) (coprime_mn : Coprime m n) :
     m ^ 2 ≠ 2 * n ^ 2 := by
@@ -88,6 +91,9 @@ The definition of divisibility is: $a|b\leftrightarrow \exists c ( a\cdot c = b)
       --   where a = 2, b = m, c = c
       -- Use MP with two_dvd_m: 2 ∣ m to prove h
 \end{Verbatim}
+
+\newpage
+
 Given an existential formula such as $\exists c P(c)$, let $c$ be some value that satisfies $P$.
 \begin{Verbatim}[firstnumber=last]
   rcases h with ⟨k, meq⟩
@@ -99,11 +105,6 @@ Given an existential formula such as $\exists c P(c)$, let $c$ be some value tha
 \end{Verbatim}
 
 \boxed{Tactic: \Verb+rcases+}{rcases-with}{\Verb+rcases h with ⟨v, h'⟩+ means given a hypothesis \Verb+h+, let \Verb+v+ be a value such that the new goal is \Verb+h'+.}
-
-\begin{center}
-\setlength{\fboxrule}{1pt}
-\fbox{\parbox{.6\textwidth}{By now you are certainly quite skillful in Lean, so the extent of the comments in the source code will be reduced.}}
-\end{center}
 
 We now prove a sequence of five hypotheses.
 \begin{Verbatim}[firstnumber=last]
@@ -118,7 +119,8 @@ We now prove a sequence of five hypotheses.
       -- Prove goal by using the ring axioms
 \end{Verbatim}
 
-\boxed{Tactic: \Verb+ring+}{ring}{Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account. For the ring of integers, only addition, subtraction, multiplication and powers by natural numbers can be used. The division operation is not defined in the ring of integers because $1/2$ is not an integer.}
+\boxed{Tactic: \Verb+ring+}{ring}{Proves equalities that can be proved directly from the axioms of a commutative ring without taking any hypotheses into account.}
+For the ring of integers, only addition, subtraction, multiplication and powers by natural numbers can be used; the division operation is not allowed because $1/2$ is not an integer.
 
 $2(2k^2)=(k\cdot 2)^2$ can be proved using only the definition of positive powers of integers as repeated multiplication, and the laws of associativity and commutativity of the integers.
 

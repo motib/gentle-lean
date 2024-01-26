@@ -1,0 +1,101 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{Groups}
+
+A group is a set of elements that satisfy some axioms. Here we show how a group can be defined in Lean, although in practice you will use the definitions in !Mathlib!. Groups are defined as \emph{classes} which consist of a type of the elements of the group, a set of functions and a set of axioms. 
+
+\subsection{Additive groups}
+
+To define an additive group like the integers, we need a function !add!, a (constant) function !zero! and a function !neg!. However, it would be weird use that notation; instead, we want to use the mathematical notation for additive structures. These are predefined in !Mathlib! and we can access them by extending the class !AddGroup! from the classes !Add!, !Zero!, !Neg!.
+\begin{Verbatim}
+class AddGroup (α : Type*) extends Add α, Zero α, Neg α where
+  add_assoc : ∀ x y z : α, x + y + z = x + (y + z)
+  add_zero : ∀ x : α, x + 0 = x
+  zero_add : ∀ x : α, 0 + x = x
+  add_left_neg : ∀ x : α, -x + x = 0
+\end{Verbatim}
+
+\boxed{Tip: Types}{types}{By convention types are denoted by Greek letters \Verb+α+}
+
+This class is a function that takes a type of elements and returns a type that is a group of those elements (see \Verb+#check AddGroup+). Declaring a variable !G! will create a group.
+
+\begin{Verbatim}[firstnumber=last]
+namespace AddGroup
+variable {G : Type*} [AddGroup G]
+\end{Verbatim}
+
+\paragraph{Proving $a + (-a) = 0$.}
+While !add_left_neg! is an axiom, !add_right_neg! is provable. Negation but not subtraction has been defined so we use the somewhat strange notation !a + (-a)!.
+\begin{Verbatim}[firstnumber=last]
+theorem add_right_neg (a : G) : a + (-a) = 0 := by
+\end{Verbatim}
+The proof starts with a hypothesis containing multiple expressions !a + (-a)! which are rearranged by associativity and then collapsed using negativity and the property of addition of zero.
+\begin{Verbatim}[firstnumber=last]
+  have h : -(a + (-a)) + (a + (-a) + (a + (-a))) = 0 := by
+    rw [add_assoc]
+    rw [← add_assoc (-a) a]
+      -- After rewriting associativity new goal is
+      --   -(a + -a) + (a + (-a + a -a)) = 0
+      -- Now add_left_neg axiom can be used
+    rw [add_left_neg]
+    rw [zero_add]
+    rw [add_left_neg]
+\end{Verbatim}
+Using the hypothesis to rewrite zero a new goal is obtained which is easy to prove.
+\begin{Verbatim}[firstnumber=last]
+  rw [← h]
+    -- New goal is a + -a = -(a + -a) + (a + (-a + a -a))
+  rw [← add_assoc]
+  rw [add_left_neg]
+  rw [zero_add]
+  done
+\end{Verbatim}
+\paragraph{Proving that $x$ and $-x$ cancel.}
+\begin{Verbatim}[firstnumber=last]
+theorem add_neg_cancel_right (a b : G) : a + b + -b = a := by
+  rw [add_assoc, add_right_neg, add_zero]
+theorem neg_add_cancel_left (a b : G) : -a + (a + b) = b := by
+  rw [← add_assoc, add_left_neg, zero_add]
+\end{Verbatim}
+
+\paragraph{Proving cancellation of equals.}
+\begin{Verbatim}[firstnumber=last]
+theorem add_left_cancel {a b c : G} 
+    (h : a + b = a + c) : b = c := by
+  rw [← neg_add_cancel_left a b, h, neg_add_cancel_left]
+theorem add_right_cancel {a b c : G}
+    (h : a + b = c + b) : a = c := by
+  rw [← add_neg_cancel_right a b, h, add_neg_cancel_right]
+\end{Verbatim}
+
+\paragraph{Theorems on integers}
+Once these theorems have been proved for groups in general, they are defined by inheritance for all groups in !Mathlib!. We can prove our own version of !add_right_neg! for integers using theorems in the library for !Int!.
+\begin{Verbatim}
+theorem my_add_right_neg (a : ℤ) : a + (-a) = 0 := by
+  have h : -(a + (-a)) + (a + (-a) + (a + (-a))) = 0 := by
+    rw [Int.add_assoc, ← Int.add_assoc (-a) a,
+        Int.add_left_neg, Int.zero_add, Int.add_left_neg]
+  rw [← h, ← Int.add_assoc, Int.add_left_neg, Int.zero_add]
+  done
+\end{Verbatim}
+
+\subsection{Multiplicative groups}
+
+In algebra textbooks, groups are defined using multiplicative notation, while additive notation is reserved for abelian groups like the integers. The same class declaration can be used to define a group using multiplicative notation except that it extends !Mul!, !One! and !Inv!. The proofs are structurally identical to the proofs for the additive groups.
+
+\begin{Verbatim}
+class Group (α : Type*) extends Mul α, One α, Inv α where
+  mul_assoc : ∀ x y z : α, x * y * z = x * (y * z)
+  mul_one : ∀ x : α, x * 1 = x
+  one_mul : ∀ x : α, 1 * x = x
+  mul_left_inv : ∀ x : α, x⁻¹ * x = 1
+
+namespace Group
+variable {G : Type*} [Group G]
+theorem mul_right_inv (a : G) : a * a⁻¹ = 1 := by
+  have h : (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1 := by
+    rw [mul_assoc, ← mul_assoc a⁻¹ a, mul_left_inv]
+    rw [one_mul, mul_left_inv]
+  rw [← h, ← mul_assoc, mul_left_inv, one_mul]
+\end{Verbatim}
