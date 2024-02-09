@@ -1,5 +1,7 @@
 import Mathlib.Tactic
 
+-- Author: https://www.weizmann.ac.il/sci-tea/benari/
+
 namespace gentle
 
 -- Define Fibonacci from 0

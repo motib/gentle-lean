@@ -1,0 +1,81 @@
+% !TeX root = gentle.tex
+% !TeX Program=XeLaTeX
+
+\section{Geometry}
+
+We learn in school that Euclid was able to give an axiomatization of geometry using only five axioms. A more careful investigation showed that Euclid's axioms are not complete. There are now modern axiomatizations, in particular, those given by David Hilbert in 1899 and by Alfred Tarski in 1926. A recent book gives an axiomatization of geometry suitable for students: David M. Clark and Samrat Pathania, \textit{A Full Axiomatic Development of High School Geometry}, Springer, 2023. Here I formalize the first few steps in the axiomatization and I invite the readers to expand it.\footnote{Additional definitions and axioms are given in the Lean source file, but no further theorems are proved.}
+
+A (two-dimensional) \emph{point} is defined as a structure with two elements of type real. A \emph{Cartesian plane} is defined as a set of points together with a function !d! which maps two points to a non-negative real number. This function represents the distance between two points in the plane and must fulfill two conditions: the distance of a point from itself is zero and the function is symmetrical.
+\begin{Verbatim}
+structure Point where
+  x : ℝ
+  y : ℝ
+
+structure Cartesian_Plane where
+  P : Set Point
+  d : Point → Point → NNReal
+  zero : ∀ A : Point, d A A = 0
+  symm : ∀ A B : Point, d A B = d B A
+\end{Verbatim}
+
+\boxed{Tip \Verb+structure+}{structure}{A structure is a collection of data together with a set of constraints on that data.}
+
+Now that we have characterized what a plane is, we can declare one.
+
+\begin{Verbatim}[firstnumber=last]
+namespace Cartesian_Plane
+variable (Plane : Cartesian_Plane)
+\end{Verbatim}
+
+Three constructs are now defined; the definitions are in line with our intuitive understanding of Euclidean geometry.
+
+The point $B$ is \emph{between} $A$ and $C$ if $d(A,C)=d(A,B)+d(B,C)$.
+\begin{Verbatim}[firstnumber=last]
+def btw (A B C : Point) := Plane.d A C = Plane.d A B + Plane.d B C
+\end{Verbatim}
+
+A \emph{line} $AB$ consists of two points $A$ and $B$, together with all points between them, all points further from $A$ than $B$, and all points further from $B$ than $A$. Similar definitions can be given for a segment and a ray.
+
+\begin{Verbatim}[firstnumber=last]
+def line (A B : Point) := {A, B} ∪ 
+  {D : Point | Plane.btw A D B ∨ Plane.btw A B D ∨ Plane.btw D A B}
+\end{Verbatim}
+
+Three points are \emph{collinear} if they are on the same line.
+
+\begin{Verbatim}[firstnumber=last]
+def col (A B C : Point) : Prop := C ∈ Plane.line A B
+\end{Verbatim}
+
+The first lemma in the book is called $SYM$ and states that if $B$ is between $A$ and $C$ then the three points are collinear and $B$ is between $C$ and $A$. We prove the two parts separately.
+
+To prove that the points are collinear, we introduce the hypothesis and use the definitions of !col! and !line!. The goal becomes\\
+\indnt{}\Verb+{A, B} ∪ {D : Point |+\\
+\indnt{}\indnt{}\Verb+ Plane.btw A D B ∨ Plane.btw A B D ∨ Plane.btw D A B}+\\
+This is a disjunction with four disjunctions and we only need to prove one of them. The second one results in a goal that is the same as the hypothesis.\footnote{Recall that operators associate to the right so \Verb+right ; left+ does not work.}
+\begin{Verbatim}[firstnumber=last]
+lemma L_1_col (A B C : Point) : 
+    Plane.btw A B C → Plane.col A B C := by
+  intro h
+  rw [col, line]
+  right ; right ; left
+  exact h
+  done
+\end{Verbatim}
+
+To prove the symmetry of !btw!, we first introduce the hypothesis and use the definition of !btw! in terms of !d!. \\
+\indnt{}!d(C,A) = d(C,B) + d(B,A)!\\
+The symmetry constraint of d and the commutativity of addition are used to re-arrange the equation. The result is\\
+\indnt{}!d(A,C) = d(A,B) + d(B,C)!\\
+which is replaced by the definition of !btw!.
+\begin{Verbatim}[firstnumber=last]
+lemma L_1_btw (A B C : Point) :
+    Plane.btw A B C → Plane.btw C B A := by
+  intro h
+  rw [btw]
+  rw [Plane.symm B A, Plane.symm C B, Plane.symm C A, add_comm]
+  rw [← btw]
+  exact h
+  done
+\end{Verbatim}
+

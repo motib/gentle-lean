@@ -1,6 +1,8 @@
 import Mathlib.Tactic
 import Mathlib.Data.Rat.NNRat
 
+-- Author: https://www.weizmann.ac.il/sci-tea/benari/
+
 namespace gentle
 
 -- Define the class of an additive group

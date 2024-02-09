@@ -1,8 +1,10 @@
 import Mathlib.Tactic
+
+-- Author: https://www.weizmann.ac.il/sci-tea/benari/
+
 namespace gentle
-/-
-  Implication
--/
+
+-- Implication
 theorem T1a {A : Prop} : (¬A → A) → A := by
   intro h1
   by_contra h2
@@ -58,3 +60,14 @@ theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
   contrapose! h1
   exact h1
   done
+
+-- Tautologies
+theorem T1a_tau {A : Prop} : (¬A → A) → A := by tauto
+
+theorem T2_tau {A B : Prop} : ((A → B) → A) → A := by tauto
+
+theorem T3_tau {A B C : Prop} : (A → B) ∨ (B → C) := by tauto
+
+theorem T0a_tau {A : Prop} (h : ¬A → A) : A := by tauto
+
+theorem T0b_tau {a : Nat} : ¬a = 0 ∨ a = 0 := by tauto

@@ -41,7 +41,7 @@ Lean uses Unicode symbols that are not on keyboards. The following table shows k
 
 \section{Tactics}\label{a.tactics}
 
-\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
+\begin{tabular}{p{.16\textwidth}|r|p{.74\textwidth}}
 \hline
 Tactic & Page & Definition\\
 \hline
@@ -84,7 +84,7 @@ An exclamation point following \Verb+contrapose+ calls tactic \Verb+push_neg+ on
 
 \end{tabular}
 
-\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
+\begin{tabular}{p{.16\textwidth}|r|p{.74\textwidth}}
 \hline
 
 \Verb+rel+&\pageref{p.rel}&Given a hypothesis \Verb+h+ which is a relation $\mathit{e_1 \; rel\_op \; e_2}$, \Verb+rel [h]+ will attempt to prove the current goal by substituting \Verb+h+ into the goal.\\\hline
@@ -142,13 +142,16 @@ example (h : k = 3): 1 + k = 4 := by norm_num  -- Error
 
 \section{Tips}
 
-\begin{tabular}{p{.15\textwidth}|r|p{.74\textwidth}}
+\begin{tabular}{p{.16\textwidth}|r|p{.74\textwidth}}
 \hline
 Topic & Page & Tip\\
 \hline
 Anonymous&\pageref{p.this}&A hypothesis can be unamed and can be subsequently accessed as \Verb+this+.\\
 hypothesis&\\\hline
+
 Associativity&\pageref{p.associativity}&The default associativity in Lean is \emph{left}: \verb!a + b + c! means \verb!(a + b) + c!. Even if the operation is associative, you still have to prove associativity for a given expression.\\\hline
+
+\Verb+class+&\pageref{p.class}&A class is a function that takes one or more types of elements and returns a type which can be used to create objects of that type.\\\hline
 
 Division&\pageref{p.division}&The division operator in Lean is not the \Verb+|+ symbol on your keyboard, but a similar Unicode symbol \Verb+∣+ obtained by typing \Verb+\|+.\\\hline
 
@@ -173,6 +176,8 @@ Negation&\pageref{p.negation}&A negation \Verb+¬p+ is defined as \Verb+p → Fa
 \Verb+range+&\pageref{p.range}&\Verb+range n+ is defined as the set of natural numbers less than \Verb+n+.\\\hline
 
 Right-to-left&\pageref{p.right-to-left}&The symbol \Verb+<|+ means to compute the expression to its right and pass it to the left.\\\hline
+
+\Verb+structure+&\pageref{p.structure}&A structure is a collection of data together with a set of constraints on that data.\\\hline
 
 Tactic&\pageref{p.tactic}&If you hover over a tactic its specification will be displayed.\\\hline
 

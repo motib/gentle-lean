@@ -1,5 +1,8 @@
 import Mathlib.Tactic
 import Mathlib.Data.Int.Basic
+
+-- Author: https://www.weizmann.ac.il/sci-tea/benari/
+
 namespace gentle
 /-
   Conjunction and disjunction

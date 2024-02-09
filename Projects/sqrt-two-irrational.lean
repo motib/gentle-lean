@@ -1,6 +1,9 @@
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Prime
 import Std.Data.Nat.Gcd
+
+-- Author: https://www.weizmann.ac.il/sci-tea/benari/
+
 namespace gentle
 open Nat
 /-

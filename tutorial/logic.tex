@@ -204,13 +204,13 @@ theorem T3 {A B C : Prop} : (A → B) ∨ (B → C) := by
 Tautologies in propositional logic can be proved very easily using semantic methods such as truth tables and semantic tableaux. Lean can prove tautologies so the above theorems can be proved immediately using the tactic !tauto!.
 
 \begin{Verbatim}[numbers=none]
-theorem T1a {A : Prop}     : (¬A → A) → A      := by tauto
-theorem T2  {A B : Prop}   : ((A → B) → A) → A := by tauto
-theorem T3  {A B C : Prop} : (A → B) ∨ (B → C) := by tauto
+theorem T1a_tau {A : Prop}     : (¬A → A) → A      := by tauto
+theorem T2_tau  {A B : Prop}   : ((A → B) → A) → A := by tauto
+theorem T3_tau  {A B C : Prop} : (A → B) ∨ (B → C) := by tauto
 \end{Verbatim}
 \boxed{Tactic: \Verb+tauto+}{tauto}{If a tautology can be formed from the hypotheses and the goal, the proof can be immediately completed using this tactic.}
 The following theorem shows that !tauto! works when the tautology is formed from both a hypothesis and a goal.\\
-\indnt{}!theorem T0a {A : Prop} (h : ¬A → A) : A := by tauto!\\
+\indnt{}!theorem T0a_tau {A : Prop} (h : ¬A → A) : A := by tauto!\\
 
 This theorem shows that !tauto! works on substitution instances of a tautology.\\
-\indnt{}!theorem T0b {a : Nat} : ¬a = 0 ∨ a = 0 := by tauto!
+\indnt{}!theorem T0b_tau {a : Nat} : ¬a = 0 ∨ a = 0 := by tauto!
